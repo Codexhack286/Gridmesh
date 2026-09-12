@@ -20,6 +20,7 @@ function labelFor(pid: string): string {
 
 interface Trade {
   index: number;
+  id?: number;
   tick: number;
   buyer_id: string;
   seller_id: string;
@@ -55,8 +56,11 @@ export function OrderbookPanel({
   const rows = [...asks, ...bids];
 
   const byIndex = new Map<number, Trade>();
+  // History rows come from GET /trades (SQLite SELECT * → `id` column);
+  // current-tick rows come from LEDGER.append (`index` field). Normalize.
   for (const t of [...history, ...currentTrades]) {
-    if (t && typeof t.index === "number") byIndex.set(t.index, t);
+    const key = typeof t?.index === "number" ? t.index : (t as any)?.id;
+    if (t && typeof key === "number") byIndex.set(key, { ...t, index: key });
   }
   const ticker = [...byIndex.values()].sort((a, b) => b.index - a.index).slice(0, 12);
 
