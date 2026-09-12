@@ -9,6 +9,8 @@ build/
 htmlcov/
 .env
 *.db
+*.db-shm
+*.db-wal
 # Regenerable OPSD source download (~60MB); the built slice IS committed
 data/.cache/
 *.csv
