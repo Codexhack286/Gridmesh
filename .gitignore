@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+*.db
+# Regenerable OPSD source download (~60MB); the built slice IS committed
+data/.cache/
+node_modules/
+.next/
+frontend/out/
+# Graphify working files; curated outputs (graph.html, GRAPH_REPORT.md,
+# graph.json) and extraction cache stay out, manifest/cost/labels stay in
+graphify-out/.graphify_*.json
+graphify-out/.graphify_*.txt
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/cache/

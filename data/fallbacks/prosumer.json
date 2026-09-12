@@ -1,0 +1,1 @@
+{"action": "sell", "qty_kwh": 0.6, "rationale": "Cached fallback: surplus covers load and 30% battery reserve is met, so sell the excess."}
