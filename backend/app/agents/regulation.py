@@ -83,6 +83,18 @@ RULES: list[dict] = [
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
+_NO_FLAG = {"", "none", "null", "n/a", "na", "nil"}
+
+
+def _normalize_flag(value: Any) -> str:
+    """Live LLMs say "none" where the offline fallback says "" — same meaning.
+
+    BUG-002: without this, a passing audit carries flag="none", which reads as
+    a violation to tests, the dashboard, and violation counters.
+    """
+    text = str(value or "").strip()
+    return "" if text.lower() in _NO_FLAG else text
+
 def _audit_single(
     trade: dict,
     index: int,
@@ -141,7 +153,7 @@ def _audit_single(
         tick=tick,
         trade_index=index,
         passed=bool(out.get("passed", True)),
-        flag=str(out.get("flag", "")),
+        flag=_normalize_flag(out.get("flag", "")),
         severity=str(out.get("severity", "info")),
         enforcement="none",
         rule_id="llm",

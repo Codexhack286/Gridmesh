@@ -1,9 +1,9 @@
 # GridMesh — Project Status
 
 > Living document. Update on every phase transition or verification run.
-> Last updated: 2026-09-12 · Phase 2 signed off · ML Forecaster Live · `uv run pytest`: **55 passed**
+> Last updated: 2026-09-12 · Phase 2 signed off · ML Forecaster Live · `uv run pytest`: **55 passed (with live Groq key)** · Live-LLM backend workout green, BUG-002 fixed
 
-Spec: `gridmesh_prd.md` · Issues: `docs/BUGLOG.md` · Quickstart: `README.md` · ML: `data/train_forecaster.py`
+Spec: `gridmesh_prd.md` (restored 2026-09-12 — see BUGLOG DOC-001) · Issues: `docs/BUGLOG.md` · Quickstart: `README.md` · ML: `data/train_forecaster.py`
 
 ## Phase tracker (PRD §8)
 
@@ -17,7 +17,7 @@ Spec: `gridmesh_prd.md` · Issues: `docs/BUGLOG.md` · Quickstart: `README.md` �
 
 ## Phase 2 sign-off evidence
 
-- `uv run pytest -q` → **52 passed** (covers prosumer battery logic, optimization dispatch, 5 regulation rules, and SQLite ledger).
+- `uv run pytest -q` → **55 passed** (verified 2026-09-12 post-merge; covers prosumer battery logic, optimization dispatch, 5 regulation rules, and SQLite ledger).
 - **Prosumer Preferences (LOOP-001)**: Battery SOC natively computed and respected before trading.
 - **Optimization (LOOP-002)**: Peak-shaving active. Community batteries discharge and EVs throttle during evening stress.
 - **Regulation (BUG-001)**: 5-rule compliance engine fully tests price collars, qty caps, self-trades, collusion, and feeder limits via `POST /api/scenario/rogue_bid`.
