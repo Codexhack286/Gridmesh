@@ -1,11 +1,9 @@
 "use client";
 
-/* Quant Core panel — HONEST PENDING STATE ONLY. The XGBoost model is not
-   trained. Nothing here may display a number, chart, or prediction as model
-   output. The only numbers shown are explicitly labeled rule-based-tier
-   figures (the live fallback), and the model-output area renders solely when
-   /api/quant/status reports a trained state (code path present, unreachable
-   today — verified by the pending status response).
+/* Quant Core panel — renders strictly from GET /api/quant/status.
+   Pending state: dashed treatment, no numbers/charts as model output.
+   Live state: solid treatment + the model's training timestamp; the
+   rule-based fallback blurb stays as provenance, never as predictions.
 */
 
 const FALLBACK_BLURB =
@@ -18,14 +16,20 @@ export function QuantPanel({ status }: { status: any }) {
   const trained = status != null && status.status !== null && status.status !== undefined && status.status !== "pending_training";
 
   return (
-    <div className="quant-pending">
+    <div className={trained ? "quant-live" : "quant-pending"}>
       <h3>
         Quant Core{" "}
         <span className="quant-badge">{status == null ? "status unknown" : status.status === "pending_training" ? "Model training in progress" : `Model ${status.status}`}</span>
       </h3>
       <p style={{ fontSize: 13 }}>
-        XGBoost pricing/forecasting model{status?.last_updated ? ` (updated ${status.last_updated})` : " — not trained yet"}. Current live
-        fallback: <b>{status?.fallback ?? "rule_based_tiers"}</b>.
+        XGBoost pricing/forecasting model{status?.last_updated ? ` (updated ${status.last_updated})` : " — not trained yet"}.{" "}
+        {status?.fallback ? (
+          <>
+            Current live fallback: <b>{status.fallback}</b>.
+          </>
+        ) : (
+          <>No fallback active — model serving.</>
+        )}
       </p>
       <p style={{ fontSize: 12.5, opacity: 0.85 }}>{FALLBACK_BLURB}</p>
       {trained ? (

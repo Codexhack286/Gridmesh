@@ -316,6 +316,14 @@ svg.grid-svg {
   background: transparent;
 }
 
+/* ---------- Quant live panel (trained model serving) ---------- */
+.quant-live {
+  border: 1px solid rgba(45, 212, 191, 0.4);
+  border-radius: 14px;
+  padding: 18px 20px;
+  background: rgba(45, 212, 191, 0.06);
+}
+
 .quant-badge {
   display: inline-block;
   font-size: 11px;

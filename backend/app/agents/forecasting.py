@@ -1,6 +1,7 @@
 """Forecasting Agent: Ensemble (Random Forest + XGBoost) ML forecaster with seasonal-naive fallback."""
 from __future__ import annotations
 
+import datetime
 import logging
 from pathlib import Path
 from typing import Any
@@ -27,6 +28,7 @@ class ForecastingAgent(BaseAgent):
     def __init__(self) -> None:
         super().__init__()
         self._model_bundle: dict[str, Any] | None = None
+        self._model_path: str | None = None
         self._load_model()
 
     def _load_model(self) -> None:
@@ -34,11 +36,38 @@ class ForecastingAgent(BaseAgent):
             if p.exists():
                 try:
                     self._model_bundle = joblib.load(p)
+                    self._model_path = str(p)
                     logger.info("ForecastingAgent loaded ensemble model from %s", p)
                     return
                 except Exception as e:
                     logger.warning("Failed to load ensemble model from %s: %s", p, e)
         self._model_bundle = None
+        self._model_path = None
+
+    @property
+    def model_info(self) -> dict[str, Any]:
+        """Live model state for /api/quant/status — same source the agent checks.
+
+        `active` is True exactly when this instance serves ensemble output
+        (i.e. `_model_bundle` loaded); otherwise the agent falls back to
+        seasonal-naive. `last_updated` prefers the bundle's training
+        timestamp, else the model file mtime.
+        """
+        if self._model_bundle is None:
+            return {"active": False, "model_path": None, "last_updated": None}
+        last_updated: str | None = self._model_bundle.get("created_at")
+        if last_updated is None and self._model_path:
+            try:
+                last_updated = datetime.datetime.fromtimestamp(
+                    Path(self._model_path).stat().st_mtime, tz=datetime.timezone.utc
+                ).isoformat()
+            except OSError:
+                last_updated = None
+        return {
+            "active": True,
+            "model_path": self._model_path,
+            "last_updated": last_updated,
+        }
 
     def _predict_one(
         self,
