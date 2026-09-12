@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "../components/dashboard.css";
 import { Header } from "../components/Header";
 import { ScenarioBar } from "../components/ScenarioBar";
-import { SynopticPanel, tickClock } from "../components/SynopticPanel";
+import { SynopticPanel } from "../components/SynopticPanel";
 import { OrderbookPanel } from "../components/OrderbookPanel";
 import { AgentStreamPanel } from "../components/AgentStreamPanel";
 import { BlockchainBanner } from "../components/BlockchainBanner";
@@ -12,6 +12,7 @@ import { useBlockchain } from "../hooks/useBlockchain";
 import { useQuant } from "../hooks/useQuant";
 import { useViolations } from "../hooks/useViolations";
 import { getTrades } from "../lib/api";
+import { tickClock } from "../lib/utils";
 
 const TICK_INTERVAL_MS = 4000;
 
@@ -46,6 +47,7 @@ export default function Page() {
         void refreshTrades();
         void violations.refresh();
         void chain.refreshChain();
+        void quant.refresh();
       });
     }, TICK_INTERVAL_MS);
     return () => clearInterval(id);
@@ -62,15 +64,23 @@ export default function Page() {
     if (!running && !inFlight.current) {
       // Fire one tick immediately on resume so the UI reacts instantly.
       inFlight.current = true;
-      advance().finally(() => { inFlight.current = false; void refreshTrades(); void violations.refresh(); });
+      advance().finally(() => {
+        inFlight.current = false;
+        void refreshTrades();
+        void violations.refresh();
+        void chain.refreshChain();
+        void quant.refresh();
+      });
     }
-  }, [running, advance, refreshTrades, violations]);
+  }, [running, advance, refreshTrades, violations, chain, quant]);
 
   const handleReset = useCallback(async () => {
     setRunning(false);
     await reset();          // clears violation log + refetches meta
     await violations.refresh();
-  }, [reset, violations]);
+    await chain.refreshChain();
+    await quant.refresh();
+  }, [reset, violations, chain, quant]);
 
   const handleInject = useCallback(async (kind: string) => {
     setActiveScenario(kind);
@@ -80,9 +90,12 @@ export default function Page() {
     // Next successful tick clears the highlight (spec §4).
   }, [inject, violations]);
 
-  // Clear scenario highlight on each new tick response.
+  // Clear scenario highlight on each new tick response and re-fetch quant status.
   useEffect(() => {
     if (data && activeScenario && activeScenario !== "normal") setActiveScenario("normal");
+    if (data?.tick != null) {
+      void quant.refresh();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.tick]);
 
@@ -106,7 +119,15 @@ export default function Page() {
         <AgentStreamPanel data={data} lastInjection={lastInjection} />
       </main>
       <BlockchainBanner
-        chain={chain.chain} verifyResult={chain.verifyResult} verifying={chain.verifying} onVerify={chain.verify}
+        chain={chain.chain}
+        verifyResult={chain.verifyResult}
+        verifying={chain.verifying}
+        demoMode={chain.demoMode}
+        tampering={chain.tampering}
+        tamperTick={chain.tamperTick}
+        setTamperTick={chain.setTamperTick}
+        onVerify={chain.verify}
+        onTamper={chain.tamper}
       />
     </>
   );

@@ -1,10 +1,8 @@
 "use client";
 import { Icon } from "./icons";
 
-export function tickClock(tick: number): string {
-  const mins = (((tick % 96) + 96) % 96) * 15;
-  return `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-}
+import { tickClock } from "../lib/utils";
+export { tickClock };
 
 const LABELS: Record<string, string> = {
   solar_home: "Solar Home",

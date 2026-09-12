@@ -1,4 +1,4 @@
-﻿.venv/
+.venv/
 __pycache__/
 *.pyc
 *.egg-info/
@@ -20,6 +20,8 @@ household_data_15min_singleindex.csv
 node_modules/
 .next/
 frontend/out/
+frontend/AGENTS.md
+frontend/CLAUDE.md
 # Graphify working files; curated outputs (graph.html, GRAPH_REPORT.md,
 # graph.json) and extraction cache stay out, manifest/cost/labels stay in
 graphify-out/.graphify_*.json

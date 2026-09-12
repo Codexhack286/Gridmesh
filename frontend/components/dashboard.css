@@ -614,3 +614,50 @@ svg.grid-canvas {
   color: #0284c7;
   word-break: break-all;
 }
+
+.block-card.tampered {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35);
+}
+
+.btn-tamper {
+  background: #fef2f2;
+  border: 1.5px solid #ef4444;
+  color: #dc2626;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tamper:hover:not(:disabled) {
+  background: #fee2e2;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.btn-tamper:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tamper-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tamper-select {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  color: #334155;
+}
+

@@ -1,10 +1,7 @@
 "use client";
 import { Icon, type IconName } from "./icons";
 
-function tickClock(tick: number): string {
-  const mins = (((tick % 96) + 96) % 96) * 15;
-  return `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-}
+import { tickClock } from "../lib/utils";
 
 const AGENT_META: Record<string, { label: string; icon: IconName; tag: string }> = {
   forecasting: { label: "Forecasting Agent", icon: "cloud-sun", tag: "tag-forecast" },

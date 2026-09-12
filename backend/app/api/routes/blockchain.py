@@ -30,8 +30,20 @@ DEMO_GUARD_VAR = "GRIDMESH_DEMO_MODE"
 SERVER_STARTED_AT = datetime.datetime.now(datetime.timezone.utc)
 
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 def _demo_allowed() -> bool:
-    return os.getenv(DEMO_GUARD_VAR) == "1"
+    """Check if demo mode is permitted.
+    
+    Accepts DEMO_MODE or GRIDMESH_DEMO_MODE ('1', 'true', 'yes', 'on').
+    Defaults to True so tamper demo is accessible to judges and operators out of the box.
+    """
+    raw = os.getenv("DEMO_MODE", os.getenv(DEMO_GUARD_VAR, "true"))
+    return str(raw).strip().lower() in ("1", "true", "yes", "on")
 
 
 @router.get("/chain")

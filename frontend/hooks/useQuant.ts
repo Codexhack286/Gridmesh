@@ -1,16 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getQuantStatus } from "../lib/api";
 
 export function useQuant() {
   const [status, setStatus] = useState<any>(null);
-  useEffect(() => {
-    getQuantStatus()
-      .then(setStatus)
-      .catch(() => {
-        /* backend unreachable or pre-quant route */
-      });
+
+  const refresh = useCallback(async () => {
+    try {
+      const data = await getQuantStatus();
+      setStatus(data);
+    } catch {
+      /* backend unreachable or pre-quant route */
+    }
   }, []);
-  return { status };
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { status, refresh };
 }

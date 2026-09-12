@@ -5,10 +5,8 @@ import { Icon } from "./icons";
 
 const TelemetryChart = dynamic(() => import("./TelemetryChart"), { ssr: false });
 
-export function tickClock(tick: number): string {
-  const mins = (((tick % 96) + 96) % 96) * 15;
-  return `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-}
+import { tickClock } from "../lib/utils";
+export { tickClock };
 
 const NODE_META: Record<string, { label: string; y: number }> = {
   solar_home: { label: "Solar Home", y: 80 },
