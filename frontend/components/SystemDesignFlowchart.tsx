@@ -16,18 +16,19 @@ interface LayerNode {
 const LAYERS: LayerNode[] = [
   {
     id: "edge",
-    title: "1. Empirical Ingestion & Calibration",
+    title: "1. Empirical Ingestion & IoT Edge Telemetry",
     category: "Telemetry & Indian Feeder Adaptation",
     icon: "circuitry",
     color: "#0B63E5",
-    summary: "Replays empirical 15-minute prosumer smart meter telemetry from Open Power System Data (OPSD), calibrated for Indian tropical solar irradiance and low-voltage distribution feeder profiles.",
+    summary: "Automated 15-minute telemetry streaming via IoT Edge Gateways (DLMS/COSEM, Modbus, MQTT) and empirical OPSD smart meter ingestion, calibrated for Indian feeder profiles.",
     technicalSpecs: [
+      "Autonomous IoT Edge Gateways: Inverters, smart meters, and battery BMS stream telemetry every 15m automatically (zero human upload)",
       "14,400 empirical 15-min smart meter records across 5 prosumer personas",
       "Calibrated to Indian GHI (5.5-6.5 kWh/m²/day) & IST 11:30-13:30 solar generation peak",
       "Normalized to Indian AC cooling load & 18:00-22:00 domestic feeder evening surges",
       "Calibrated to Central Electricity Authority (CEA) 0.716 kg CO₂/kWh grid baseline"
     ],
-    metrics: "14,400 OPSD Records • Indian IST / CEA Calibrated"
+    metrics: "14,400 OPSD Records • Automated IoT Stream • IST / CEA Calibrated"
   },
   {
     id: "quant",
@@ -103,12 +104,27 @@ const LAYERS: LayerNode[] = [
     metrics: "Zero Gas Fees • Provable SHA-256 Integrity"
   },
   {
+    id: "sandbox",
+    title: "7. Interactive What-If Decision Sandbox",
+    category: "Stateless Parameter Injection & Evaluation",
+    icon: "flask",
+    color: "#6366F1",
+    summary: "Interactive evaluator and operator simulation suite for testing agent decision logic under arbitrary operational conditions.",
+    technicalSpecs: [
+      "Stateless simulation endpoint (POST /api/simulate/decision) without ledger mutation",
+      "Live sliders for Solar PV (0-12 kW), Load (0-12 kW), Battery SOC (0-100%), and P2P Tariff",
+      "Dynamic agent reasoning output: Action badges, natural-language rationale, and orderbook emission",
+      "Instant stress testing of transformer safety thresholds and CERC regulatory guardrails"
+    ],
+    metrics: "Sub-50ms Evaluation • 5 Quick Presets • Zero Side-Effects"
+  },
+  {
     id: "dashboard",
-    title: "7. Operator Control Console",
+    title: "8. Operator Control Console",
     category: "Real-Time Operator Interface",
     icon: "gauge",
     color: "#475569",
-    summary: "Reactive Next.js 16 user interface visualizing feeder topology, orderbook depth, and agent decisions.",
+    summary: "Reactive Next.js user interface visualizing feeder topology, orderbook depth, and agent decisions.",
     technicalSpecs: [
       "Live SVG feeder topology with directional animated current flow lines",
       "Live trade ticker with individual community savings calculations",

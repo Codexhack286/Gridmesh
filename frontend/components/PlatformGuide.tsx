@@ -349,6 +349,130 @@ export function PlatformGuide() {
           </table>
         </div>
       </div>
+
+      {/* Production Telemetry Ingestion & Hardware Architecture FAQ */}
+      <div className="card-light">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
+          <div>
+            <h3 className="section-title-light" style={{ margin: 0 }}>
+              <Icon name="circuitry" size={16} />
+              <span>Production Telemetry Architecture: How Do 15-Minute Readings Reach the Platform?</span>
+            </h3>
+            <p className="section-hint-light" style={{ margin: "4px 0 0" }}>
+              Addressing the operational question: Do prosumers manually upload data every 15 minutes?
+            </p>
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--voltage)", background: "var(--voltage-soft)", padding: "3px 10px", borderRadius: 999 }}>
+            Zero Manual Uploads • Autonomous IoT Ingestion
+          </span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 18, marginTop: 14, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px" }}>
+              <h4 style={{ margin: "0 0 6px", fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>
+                The Core Answer: Humans Never Manually Upload Data
+              </h4>
+              <p style={{ fontSize: 12.5, color: "var(--slate)", lineHeight: 1.55, margin: 0 }}>
+                In a real-world smart microgrid, <strong>prosumers never log into an app or upload spreadsheets every 15 minutes</strong>. That would be completely impractical. Instead, data acquisition is 100% autonomous, driven by dedicated on-premise hardware collectors running standard industrial energy protocols.
+              </p>
+            </div>
+
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px" }}>
+              <h4 style={{ margin: "0 0 6px", fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>
+                The Dedicated On-Premise Component: The IoT Edge Microgrid Gateway
+              </h4>
+              <p style={{ fontSize: 12.5, color: "var(--slate)", lineHeight: 1.55, margin: "0 0 10px" }}>
+                Each participant home, commercial facility, or EV hub has a small physical <strong>IoT Edge Microgrid Controller / Smart Inverter Gateway</strong> (e.g., an industrial Raspberry Pi CM4, ESP32-S3 edge node, or inverter dongle) installed alongside their electrical panel:
+              </p>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "var(--slate)", display: "flex", flexDirection: "column", gap: 6 }}>
+                <li><strong>Smart Meters (IS 16444 / IS 15959 Indian Standard):</strong> Communicates bidirectional kWh imports and exports via <strong>DLMS / COSEM</strong> over cellular 4G/NB-IoT or RS-485.</li>
+                <li><strong>Rooftop Solar Inverters:</strong> Samples instantaneous generation (kW) and MPPT voltage via <strong>Modbus RTU / Modbus TCP</strong> (SunSpec standard across SolarEdge, Sungrow, Enphase, Havells).</li>
+                <li><strong>Battery Storage (BESS):</strong> Queries state-of-charge (SOC %), charge limit, and temperature via <strong>CAN bus / RS-485</strong> from the Battery Management System (BMS).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px" }}>
+              <h4 style={{ margin: "0 0 6px", fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>
+                Automated 15-Minute Telemetry Pipeline
+              </h4>
+              <p style={{ fontSize: 12.5, color: "var(--slate)", lineHeight: 1.55, margin: "0 0 8px" }}>
+                Every 15-minute dispatch interval (96 times daily):
+              </p>
+              <ol style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "var(--slate)", display: "flex", flexDirection: "column", gap: 6 }}>
+                <li>The IoT Edge Gateway polls meters and inverters at 15-minute boundary ticks (e.g. 11:00, 11:15, 11:30).</li>
+                <li>The telemetry packet (<code>load_kw</code>, <code>gen_kw</code>, <code>battery_soc_pct</code>) is securely encrypted and transmitted to the edge cluster via <strong>MQTT over TLS</strong> or <strong>gRPC</strong>.</li>
+                <li>The prosumer&apos;s autonomous trading agent ingests the packet, checks stored user preferences, and formulates market orders in milliseconds.</li>
+              </ol>
+            </div>
+
+            <div style={{ background: "var(--leaf-soft)", border: "1px solid #BBF7D0", borderRadius: "var(--radius-sm)", padding: "12px 16px" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#0C6B3A", marginBottom: 2 }}>
+                What Does the Human Prosumer Actually Do?
+              </div>
+              <p style={{ fontSize: 11.5, color: "#166534", lineHeight: 1.5, margin: 0 }}>
+                The prosumer sets their high-level economic policy <strong>once</strong> (e.g. &ldquo;Keep 30% battery reserve; sell surplus when battery exceeds 80%&rdquo;) via their mobile app. Their software agent executes on their behalf 24/7 without requiring manual human clicks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive What-If Decision Sandbox Guide */}
+      <div className="card-light">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
+          <div>
+            <h3 className="section-title-light" style={{ margin: 0 }}>
+              <Icon name="flask" size={16} />
+              <span>The What-If Decision Sandbox: Operator Stress-Testing &amp; Policy Audit</span>
+            </h3>
+            <p className="section-hint-light" style={{ margin: "4px 0 0" }}>
+              How evaluators and grid engineers test multi-agent reasoning under boundary conditions without altering the live ledger.
+            </p>
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1", background: "#EEF2FF", padding: "3px 10px", borderRadius: 999 }}>
+            Stateless Simulator Engine
+          </span>
+        </div>
+
+        <p style={{ fontSize: 13, color: "var(--slate)", lineHeight: 1.55, margin: "10px 0 16px" }}>
+          While live smart meters stream data autonomously in <strong>Mode 1 (Autonomous Empirical Replay)</strong>, the <strong>What-If Sandbox (Mode 2)</strong> provides an interactive testing suite. Evaluators can drag sliders or apply presets to prove that agent decisions branch dynamically in real time:
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+          <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--leaf)" }}>PRESET 1</span>
+            <div style={{ fontWeight: 600, fontSize: 12.5, color: "var(--ink)", marginTop: 2 }}>Noon Solar Export</div>
+            <div style={{ fontSize: 11.5, color: "var(--slate)", marginTop: 4 }}>High solar (6.8 kW) + full battery (92%) triggers P2P Ask to sell power to local peers at ₹6.20/kWh.</div>
+          </div>
+
+          <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#D97706" }}>PRESET 2</span>
+            <div style={{ fontWeight: 600, fontSize: 12.5, color: "var(--ink)", marginTop: 2 }}>Battery Self-Storage</div>
+            <div style={{ fontSize: 11.5, color: "var(--slate)", marginTop: 4 }}>Surplus solar (4.5 kW) with low battery (35% SOC) prioritizes local battery charging over market export.</div>
+          </div>
+
+          <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--voltage)" }}>PRESET 3</span>
+            <div style={{ fontWeight: 600, fontSize: 12.5, color: "var(--ink)", marginTop: 2 }}>Evening Deficit</div>
+            <div style={{ fontSize: 11.5, color: "var(--slate)", marginTop: 4 }}>Zero solar + heavy domestic demand (3.6 kW) emits a P2P Buy Bid to save ₹1.60/kWh vs. DISCOM tariff.</div>
+          </div>
+
+          <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--alert)" }}>PRESET 4</span>
+            <div style={{ fontWeight: 600, fontSize: 12.5, color: "var(--ink)", marginTop: 2 }}>Feeder Overload (BESS)</div>
+            <div style={{ fontSize: 11.5, color: "var(--slate)", marginTop: 4 }}>Demand surge pushes feeder load above 6.0 kW threshold, triggering an automated BESS peak-shaving override.</div>
+          </div>
+
+          <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#DC2626" }}>PRESET 5</span>
+            <div style={{ fontWeight: 600, fontSize: 12.5, color: "var(--ink)", marginTop: 2 }}>CERC Price Collar Spike</div>
+            <div style={{ fontSize: 11.5, color: "var(--slate)", marginTop: 4 }}>Setting price to ₹11.50/kWh triggers the CERC Regulatory Guard (Rule R-01), auto-voiding the rogue trade.</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
