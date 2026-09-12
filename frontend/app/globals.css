@@ -1,0 +1,93 @@
+/* Site-wide design tokens + base theme. Imported once from the root layout
+   (Next.js serves route CSS from here reliably, including `next dev` —
+   a page-level global-CSS import left dev serving an empty stylesheet).
+   Component classes stay in components/topology.css; tokens live here. */
+
+:root {
+  --bg: #0a0e14;
+  --bg-deep: #060810;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-border: rgba(255, 255, 255, 0.09);
+  --text-primary: #e4e7ec;
+  --text-secondary: #8b93a1;
+  --text-tertiary: #565e6d;
+  --solar: #f5a623;
+  --battery: #2dd4bf;
+  --flow: #4fa3f7;
+  --stress: #ff5c5c;
+  --line-idle: rgba(255, 255, 255, 0.1);
+  /* --font-sans / --font-mono are set by next/font on <html> (see layout.tsx);
+     the stacks below keep working (system fallbacks) even if fonts fail. */
+}
+
+html {
+  background: var(--bg-deep);
+}
+
+body {
+  background: radial-gradient(ellipse 120% 80% at 50% -10%, #10151f 0%, var(--bg) 45%, var(--bg-deep) 100%);
+  color: var(--text-primary);
+  font-family: var(--font-sans, "IBM Plex Sans"), system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* Shared panel treatment for section shells (Topology keeps its own). */
+.shell-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.shell-caption {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-width: 72ch;
+  margin: 4px 0 16px;
+}
+
+.shell-empty {
+  color: var(--text-tertiary);
+  font-size: 13px;
+  padding: 12px 0;
+}
+
+/* Tab nav */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 24px;
+}
+
+.tab-btn {
+  font-family: var(--font-sans, "IBM Plex Sans"), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+
+.tab-btn[aria-selected="true"] {
+  color: var(--text-primary);
+  border-color: var(--flow);
+  background: rgba(79, 163, 247, 0.1);
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid var(--flow);
+  outline-offset: 2px;
+}

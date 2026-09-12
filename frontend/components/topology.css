@@ -1,18 +1,6 @@
 /* Topology + status-strip visual language (ported from the simulation.html
-   prototype's CSS custom properties and animation classes; values are live). */
-
-:root {
-  --bg: #0a0e14;
-  --panel: rgba(255, 255, 255, 0.045);
-  --panel-border: rgba(255, 255, 255, 0.09);
-  --text-primary: #e4e7ec;
-  --text-secondary: #8b93a1;
-  --solar: #f5a623;
-  --battery: #2dd4bf;
-  --flow: #4fa3f7;
-  --stress: #ff5c5c;
-  --line-idle: rgba(255, 255, 255, 0.1);
-}
+   prototype's animation classes; design tokens live in app/globals.css —
+   :root is intentionally not duplicated here so the palette can't drift). */
 
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -27,11 +15,11 @@
   color: var(--text-primary);
   min-height: 100vh;
   padding: 40px 24px 80px;
-  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-family: var(--font-sans, "IBM Plex Sans"), system-ui, sans-serif;
 }
 
 .topology-page .mono {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
 }
 
 .status-strip {
@@ -82,7 +70,7 @@
 }
 
 .status-detail {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   font-size: 12.5px;
   color: var(--text-secondary);
   margin-left: auto;
@@ -110,7 +98,7 @@ svg.grid-svg {
 }
 
 .node-sub {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   font-size: 10.5px;
   fill: var(--text-secondary);
 }
@@ -122,7 +110,7 @@ svg.grid-svg {
 }
 
 .hub-sub {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   font-size: 10.5px;
   fill: var(--text-secondary);
 }
@@ -189,7 +177,7 @@ svg.grid-svg {
 }
 
 .action-chip {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   font-size: 9.5px;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -259,6 +247,14 @@ svg.grid-svg {
   margin: 12px 0;
 }
 
+/* Condensed chain view: fixed height, scrolls instead of dumping 80 chips. */
+.chain-seq.chain-scroll {
+  max-height: 172px;
+  overflow-y: auto;
+  align-content: flex-start;
+  padding: 4px 2px;
+}
+
 .chain-link-wrap {
   display: inline-flex;
   align-items: center;
@@ -282,12 +278,12 @@ svg.grid-svg {
 }
 
 .chain-hash {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   color: var(--text-secondary);
 }
 
 .chain-counts {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono, "IBM Plex Mono"), ui-monospace, monospace;
   font-size: 10.5px;
   color: var(--text-secondary);
 }

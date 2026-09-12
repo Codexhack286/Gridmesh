@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 /* Blockchain centerpiece: the hash chain as a visual sequence, a
    pass/fail VERIFY state (green/red strip, same treatment as the
    topology status strip), and — demo mode only — a tamper test that
@@ -42,6 +44,12 @@ export function BlockchainPanel({
   const broken: number | null = verifyResult?.first_break ?? null;
   const passed: boolean | null = verifyResult == null ? null : verifyResult.valid === true;
   const ordered = [...(chain ?? [])].reverse();
+  // Condensed demo view: most recent 12 blocks in a fixed-height scroll box.
+  // A full 80-chip dump is not legible live; the whole chain stays one click
+  // away via the expander below.
+  const [showAll, setShowAll] = useState(false);
+  const RECENT_N = 12;
+  const visible = showAll ? ordered : ordered.slice(-RECENT_N);
 
   return (
     <div>
@@ -58,8 +66,8 @@ export function BlockchainPanel({
         </div>
       </div>
 
-      <div className="chain-seq" aria-label="Block sequence, oldest to newest">
-        {(ordered ?? []).map((b) => (
+      <div className="chain-seq chain-scroll" aria-label="Block sequence, oldest to newest">
+        {(visible ?? []).map((b) => (
           <span key={b.block_index} className="chain-link-wrap">
             <span
               className={b.block_index === broken ? "chain-block chain-broken" : "chain-block"}
@@ -79,7 +87,12 @@ export function BlockchainPanel({
       </div>
       <p style={{ fontSize: 12, opacity: 0.75 }}>
         Each block&apos;s line into the next is its <span className="mono">prev_hash → block_hash</span> link; break the
-        link and verify fails at exactly that block.
+        link and verify fails at exactly that block. Showing {visible.length} of {ordered.length} —{" "}
+        {ordered.length > RECENT_N && (
+          <button onClick={() => setShowAll(!showAll)} style={{ fontSize: 12 }}>
+            {showAll ? "collapse to recent" : "view full chain"}
+          </button>
+        )}
       </p>
 
       {demoMode ? (
