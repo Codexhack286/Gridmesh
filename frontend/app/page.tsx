@@ -11,6 +11,7 @@ import { QuantPanel } from "../components/QuantPanel";
 import { CompliancePanel } from "../components/CompliancePanel";
 import { SystemDesignFlowchart } from "../components/SystemDesignFlowchart";
 import { PlatformGuide } from "../components/PlatformGuide";
+import { DatasetCalibrationBanner } from "../components/DatasetCalibrationBanner";
 import { Icon } from "../components/icons";
 import { useGridStream } from "../hooks/useGridStream";
 import { useBlockchain } from "../hooks/useBlockchain";
@@ -209,6 +210,8 @@ export default function Page() {
                 : `Grid Status: Normal — Feeder demand (${agg.toFixed(2)} kW) within safe operational threshold.`}
             </span>
           </div>
+
+          <DatasetCalibrationBanner />
 
           <ScenarioBar injecting={injecting} activeKind={activeScenario} onInject={handleInject} />
 

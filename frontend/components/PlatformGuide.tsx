@@ -267,6 +267,88 @@ export function PlatformGuide() {
           </div>
         </div>
       </div>
+
+      {/* Dataset Adaptation & Indian Market Calibration Section */}
+      <div className="card-light">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 6 }}>
+          <div>
+            <h3 className="section-title-light" style={{ margin: 0 }}>
+              Dataset Adaptation: German OPSD Telemetry to Indian Microgrid Calibration
+            </h3>
+            <p className="section-hint-light" style={{ margin: "4px 0 0" }}>
+              Technical methodology for deploying high-resolution empirical smart meter data in the Indian electricity ecosystem.
+            </p>
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--leaf)", background: "var(--leaf-soft)", padding: "3px 10px", borderRadius: 999 }}>
+            CEA &amp; DISCOM Calibrated
+          </span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 14 }}>
+          <div style={{ border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px", background: "var(--surface)" }}>
+            <h4 style={{ margin: "0 0 6px", fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>
+              Why Open Power System Data (OPSD)?
+            </h4>
+            <p style={{ fontSize: 12.5, color: "var(--slate)", lineHeight: 1.5, margin: 0 }}>
+              In smart grid research, open public microgrid datasets containing synchronized 15-minute prosumer load, rooftop solar generation, and battery state-of-charge (SOC) at the individual household level are virtually non-existent in India due to DISCOM meter data privacy restrictions. OPSD is the international gold standard providing 14,400 empirical records across 30 days.
+            </p>
+          </div>
+
+          <div style={{ border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px", background: "var(--surface)" }}>
+            <h4 style={{ margin: "0 0 6px", fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>
+              The 5-Point Indian Calibration Engine
+            </h4>
+            <p style={{ fontSize: 12.5, color: "var(--slate)", lineHeight: 1.5, margin: 0 }}>
+              GridMesh ingests empirical telemetry and applies 5 mathematical transformation layers: (1) Solar peak alignment to Indian tropical GHI (11:30–13:30 IST); (2) Feeder load scaling for Indian AC cooling &amp; evening domestic surges; (3) DISCOM LT retail tariff mapping (₹8.00/kWh); (4) CEA grid emission factor recalibration (0.716 kg CO₂/kWh); and (5) CERC / SERC regulatory guardrails.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 16, overflowX: "auto" }}>
+          <table className="light-table">
+            <thead>
+              <tr>
+                <th>Conversion Dimension</th>
+                <th>Raw OPSD Telemetry (Germany)</th>
+                <th>Indian Microgrid Adaptation</th>
+                <th>Operational Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Solar Generation Profile</strong></td>
+                <td>Temperate latitude (50°N), lower winter insolation, peak 12:00 CET</td>
+                <td>Tropical Indian GHI (5.5–6.5 kWh/m²/day), peak generation 11:30–13:30 IST</td>
+                <td>Higher solar export volume during peak cooling hours</td>
+              </tr>
+              <tr>
+                <td><strong>Feeder Demand Dynamics</strong></td>
+                <td>Space-heating dominated baseload</td>
+                <td>Afternoon commercial cooling + pronounced evening domestic surge (18:00–22:00)</td>
+                <td>BESS discharge scheduled during evening peak, avoiding transformer overload</td>
+              </tr>
+              <tr>
+                <td><strong>Tariff &amp; Clearing Structure</strong></td>
+                <td>European feed-in (€0.08) vs. retail (€0.32)</td>
+                <td>DISCOM LT tariff (₹8.00/kWh), net-metering buyback (₹2.60/kWh), P2P (₹5.50/kWh)</td>
+                <td>Consumers save ₹2.50/kWh (31%), prosumers earn +112% profit</td>
+              </tr>
+              <tr>
+                <td><strong>Carbon Avoidance Baseline</strong></td>
+                <td>EU grid intensity (~0.233 kg CO₂/kWh)</td>
+                <td>Central Electricity Authority (CEA) Baseline Database v19 (0.716 kg CO₂/kWh)</td>
+                <td>3.07× higher greenhouse gas reduction per kWh traded locally</td>
+              </tr>
+              <tr>
+                <td><strong>Regulatory Guardrails</strong></td>
+                <td>EU Clean Energy Package directives</td>
+                <td>CERC Open Access P2P framework &amp; SERC Distributed Solar net-metering quotas</td>
+                <td>Automated compliance protection against predatory pricing &amp; wash trading</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

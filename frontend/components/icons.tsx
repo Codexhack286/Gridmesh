@@ -6,7 +6,7 @@ export type IconName =
   | "check-circle" | "tag-theft" | "boxes" | "loop" | "users" | "circuitry"
   | "sun" | "trend-up" | "gauge" | "handshake" | "cloud-sun" | "house"
   | "heartbeat" | "sliders" | "shield-check" | "shield-warning" | "scales"
-  | "brain" | "link" | "caret-down" | "caret-right";
+  | "brain" | "link" | "caret-down" | "caret-right" | "chevron-down" | "chevron-up";
 
 const PATHS: Record<IconName, ReactNode> = {
   lightning: <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" />,
@@ -36,6 +36,8 @@ const PATHS: Record<IconName, ReactNode> = {
   link: <path d="m10.6 13.4 1.4 1.4-2.5 2.5a3.5 3.5 0 0 1-5-5L7 9.8l1.4 1.4-1.1 1.1a1.5 1.5 0 0 0 2.1 2.1l1.2-1zM14 9.6l-1.4-1.4 2.5-2.5a3.5 3.5 0 0 1 5 5L17.6 14l-1.4-1.4 1.1-1.1a1.5 1.5 0 0 0-2.1-2.1L14 10.6v-1zM8 15l2-2 1.4 1.4-2 2L8 15zm6-8 2-2 1.4 1.4-2 2L14 7z" />,
   "caret-down": <path d="m6 9 6 6 6-6H6z" />,
   "caret-right": <path d="m9 6 6 6-6 6V6z" />,
+  "chevron-down": <path d="m6 9 6 6 6-6-1.4-1.4L12 12.2 7.4 7.6 6 9z" />,
+  "chevron-up": <path d="m6 15 6-6 6 6-1.4 1.4L12 10.8l-4.6 4.6L6 15z" />,
 };
 
 export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {

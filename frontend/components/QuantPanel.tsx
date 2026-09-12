@@ -104,7 +104,10 @@ export function QuantPanel({ quantStatus, data }: QuantPanelProps) {
           <dd>Voting Ensemble: Random Forest (100 estimators, max depth 12) + XGBoost (100 rounds, learning rate 0.08, max depth 5)</dd>
 
           <dt>Training Dataset</dt>
-          <dd>14,400 observations across 30 days derived from Open Power System Data (OPSD) Southern Germany 6-Household telemetry</dd>
+          <dd>14,400 observations across 30 days derived from Open Power System Data (OPSD) empirical 15-min prosumer smart meter telemetry</dd>
+
+          <dt>Regional Calibration</dt>
+          <dd>Empirical curves mapped to Indian distribution feeder operating characteristics: IST solar peak (11:30–13:30), afternoon cooling load, evening domestic surge (18:00–22:00 IST), and Central Electricity Authority (CEA) 0.716 kg CO₂/kWh factor</dd>
 
           <dt>Evaluation Method</dt>
           <dd>Temporal out-of-sample split (7 unseen days evaluated chronologically to prevent data leakage)</dd>

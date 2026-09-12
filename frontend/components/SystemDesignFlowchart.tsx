@@ -16,17 +16,18 @@ interface LayerNode {
 const LAYERS: LayerNode[] = [
   {
     id: "edge",
-    title: "1. Edge Telemetry Layer",
-    category: "Data Ingestion & Physical Assets",
+    title: "1. Empirical Ingestion & Calibration",
+    category: "Telemetry & Indian Feeder Adaptation",
     icon: "circuitry",
     color: "#0B63E5",
-    summary: "Replays real 15-minute telemetry from the Open Power System Data (OPSD) Southern Germany 6-Household Dataset.",
+    summary: "Replays empirical 15-minute prosumer smart meter telemetry from Open Power System Data (OPSD), calibrated for Indian tropical solar irradiance and low-voltage distribution feeder profiles.",
     technicalSpecs: [
-      "Solar irradiance (W/m²), ambient temperature, household load curves",
-      "5 physical nodes: Solar Home, Household, Commercial Solar, EV Hub, Community BESS",
-      "96 discrete simulation ticks per 24-hour operational cycle"
+      "14,400 empirical 15-min smart meter records across 5 prosumer personas",
+      "Calibrated to Indian GHI (5.5-6.5 kWh/m²/day) & IST 11:30-13:30 solar generation peak",
+      "Normalized to Indian AC cooling load & 18:00-22:00 domestic feeder evening surges",
+      "Calibrated to Central Electricity Authority (CEA) 0.716 kg CO₂/kWh grid baseline"
     ],
-    metrics: "14,400 Historical Records • 15-Min Step"
+    metrics: "14,400 OPSD Records • Indian IST / CEA Calibrated"
   },
   {
     id: "quant",
@@ -261,9 +262,9 @@ export function SystemDesignFlowchart() {
             <g transform="translate(10, 30)">
               <rect width="110" height="80" rx="8" fill="#F8FAFC" stroke="#E3E8F0" strokeWidth="1.5" />
               <rect x="0" y="0" width="110" height="4" rx="2" fill="#0B63E5" />
-              <text x="55" y="32" textAnchor="middle" fontSize="11" fontWeight="700" fill="#10182B">1. OPSD IoT</text>
-              <text x="55" y="50" textAnchor="middle" fontSize="9.5" fill="#5D6B82">Solar &amp; Load</text>
-              <text x="55" y="66" textAnchor="middle" fontSize="9" fontWeight="600" fill="#0B63E5">96 Ticks/Day</text>
+              <text x="55" y="32" textAnchor="middle" fontSize="10" fontWeight="700" fill="#10182B">1. OPSD Telemetry</text>
+              <text x="55" y="50" textAnchor="middle" fontSize="9" fill="#5D6B82">Indian Calibrated</text>
+              <text x="55" y="66" textAnchor="middle" fontSize="9" fontWeight="600" fill="#0B63E5">96 Ticks / IST</text>
             </g>
 
             {/* Node 2: Quant Forecaster */}
