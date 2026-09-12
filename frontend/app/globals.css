@@ -1,35 +1,52 @@
-/* Light-theme design tokens ported verbatim from simulation.html (:root lines 16-44).
-   Base body rules per simulation.html lines 52-61; fonts served locally via
-   next/font (see layout.tsx) exposed as --font-sans / --font-mono. */
+/* Light-theme design tokens aligned with gridmesh-dashboard-lightmode.html */
 
 :root {
-  --bg-main: #f8fafc;
-  --bg-card: #ffffff;
-  --border-color: #e2e8f0;
-  --border-subtle: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --paper: #F5F7FB;
+  --surface: #FFFFFF;
+  --line: #E3E8F0;
+  --line-strong: #CFD8E3;
+  --ink: #10182B;
+  --slate: #5D6B82;
+  --slate-soft: #8C97AC;
+  --current: #0B63E5;
+  --current-soft: #E8F0FE;
+  --voltage: #7C3AED;
+  --voltage-soft: #F1EBFD;
+  --sun: #C97A12;
+  --sun-soft: #FBF0DD;
+  --leaf: #128A4A;
+  --leaf-soft: #E5F6EC;
+  --alert: #D0223A;
+  --alert-soft: #FCE8EA;
+  --orange: #C2560C;
+  --orange-soft: #FBEBDF;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(16,24,43,.05);
+  --shadow-md: 0 8px 24px rgba(16,24,43,.08);
 
-  --brand-blue: #0284c7;
-  --brand-blue-light: #e0f2fe;
-  --green-gen: #10b981;
-  --green-light: #ecfdf5;
-  --amber-warn: #f59e0b;
-  --amber-light: #fef3c7;
-  --red-alert: #ef4444;
-  --red-light: #fef2f2;
-  --purple-agent: #8b5cf6;
-  --purple-light: #f5f3ff;
-  --indigo-reg: #6366f1;
-  --indigo-light: #e0e7ff;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* Legacy mapping aliases to preserve backwards compatibility */
+  --bg-main: var(--paper);
+  --bg-card: var(--surface);
+  --border-color: var(--line);
+  --border-subtle: var(--paper);
+  --text-primary: var(--ink);
+  --text-secondary: var(--slate);
+  --text-muted: var(--slate-soft);
+  --brand-blue: var(--current);
+  --brand-blue-light: var(--current-soft);
+  --green-gen: var(--leaf);
+  --green-light: var(--leaf-soft);
+  --amber-warn: var(--sun);
+  --amber-light: var(--sun-soft);
+  --red-alert: var(--alert);
+  --red-light: var(--alert-soft);
+  --purple-agent: var(--voltage);
+  --purple-light: var(--voltage-soft);
+  --indigo-reg: #4338CA;
+  --indigo-light: #EEF2FF;
+  --radius-md: var(--radius);
+  --radius-lg: 16px;
 }
 
 * {
@@ -37,37 +54,46 @@
 }
 
 html {
-  background: var(--bg-main);
+  background-color: var(--paper);
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-sans, 'Inter', sans-serif);
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  line-height: 1.4;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
+  font-family: var(--font-body, var(--font-sans, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif));
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(rgba(16, 24, 43, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 24, 43, 0.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--current-soft);
+  color: var(--current);
 }
 
 .mono {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono, 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace);
 }
 
-/* Scrollbar styling from simulation.html lines 648-661 */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--paper);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--line-strong);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--slate-soft);
 }
