@@ -1,16 +1,22 @@
 "use client";
+import { BlockchainPanel } from "../components/BlockchainPanel";
 import { CompliancePanel } from "../components/CompliancePanel";
 import { DecisionLog } from "../components/DecisionLog";
 import { ForecastChart } from "../components/ForecastChart";
+import { QuantPanel } from "../components/QuantPanel";
 import { StressBanner } from "../components/StressBanner";
 import { Topology, tickClock } from "../components/Topology";
 import { TradeLedger } from "../components/TradeLedger";
+import { useBlockchain } from "../hooks/useBlockchain";
 import { useGridStream } from "../hooks/useGridStream";
+import { useQuant } from "../hooks/useQuant";
 import "../components/topology.css";
 
 export default function Page() {
   const { data, reports, chainStatus, lastInjection, checkedAt, loading, injecting, advance, inject, check } =
     useGridStream();
+  const chain = useBlockchain();
+  const quant = useQuant();
   const community = reports?.community;
   return (
     <main className="topology-page">
@@ -62,6 +68,18 @@ export default function Page() {
           onCheck={check}
           injecting={injecting}
         />
+        <BlockchainPanel
+          chain={chain.chain}
+          verifyResult={chain.verifyResult}
+          demoMode={chain.demoMode}
+          verifying={chain.verifying}
+          tampering={chain.tampering}
+          tamperTick={chain.tamperTick}
+          setTamperTick={chain.setTamperTick}
+          onVerify={chain.verify}
+          onTamper={chain.tamper}
+        />
+        <QuantPanel status={quant.status} />
       </div>
     </main>
   );

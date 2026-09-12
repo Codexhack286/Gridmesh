@@ -23,3 +23,27 @@ export async function postRogueBid(kind: string, tick = 9999) {
   });
   return r.json();
 }
+
+export async function getChain() {
+  const r = await fetch(`${API_BASE}/api/blockchain/chain`);
+  return r.json();
+}
+
+export async function getChainVerify() {
+  const r = await fetch(`${API_BASE}/api/blockchain/verify`);
+  return r.json();
+}
+
+export async function postTamper(tick: number) {
+  const r = await fetch(`${API_BASE}/api/blockchain/demo/tamper`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tick }),
+  });
+  return r.json();
+}
+
+export async function getQuantStatus() {
+  const r = await fetch(`${API_BASE}/api/quant/status`);
+  return r.json();
+}
