@@ -1,7 +1,7 @@
 # GridMesh — Project Status
 
 > Living document. Update on every phase transition or verification run.
-> Last updated: 2026-09-12 · Phase 2 signed off · ML Forecaster Live · `uv run pytest`: **55 passed (with live Groq key)** · Live-LLM backend workout green, BUG-002 fixed
+> Last updated: 2026-09-12 · Phase 2 signed off · ML Forecaster Live · `uv run pytest`: **55 passed (with live Groq key)** · Live-LLM backend workout green, BUG-002 fixed · Frontend rebuilt as single-screen Control Center (simulation.html port, Tasks 1–10), gates green, BUG-003 fixed
 
 Spec: `gridmesh_prd.md` (restored 2026-09-12 — see BUGLOG DOC-001) · Issues: `docs/BUGLOG.md` · Quickstart: `README.md` · ML: `data/train_forecaster.py`
 

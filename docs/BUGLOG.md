@@ -20,6 +20,17 @@
 
 ## Fixed
 
+### BUG-003 (fixed 2026-09-12) — Trade ticker dropped ledger history (`index` vs `id`)
+- *Found:* Frontend connectivity check: `GET /trades` rows carry SQLite `id`,
+  but `OrderbookPanel` deduped/keyed only on `index` (the `LEDGER.append` field).
+  History rows were silently skipped → ticker showed current-tick trades only,
+  and would have rendered `TR-undefined` keys.
+- *Fix:* Normalize key (`index ?? id`) in `OrderbookPanel.tsx`, added optional
+  `id` to the `Trade` interface.
+  Evidence: `npm run build` green; endpoint shapes verified live
+  (`/trades` total=4, `/tick`, `/api/reports`, rogue-bid `bulk_dump`→R-05,
+  chain verify valid).
+
 ### BUG-002 (fixed 2026-09-12) — Live LLM returns flag="none", fallback returns ""
 - *Found:* Backend workout with real Groq key: `test_clean_trade_passes` failed
   (`assert 'none' == ''`). Passing audits carried a truthy flag, polluting violation
