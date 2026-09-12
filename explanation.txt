@@ -1,0 +1,185 @@
+================================================================================
+GRIDMESH: 2.5-MINUTE WINNING DEMO & EXPLANATION VIDEO SCRIPT
+================================================================================
+Target Duration : 2 Minutes 30 Seconds - 2 Minutes 45 Seconds
+Optimal Pace    : ~140-150 words per minute (confident, crisp, professional)
+Tone            : Authoritative, energetic, engineering-grounded, zero fluff
+Platform State  : All features listed below are live, tested, and working in the pushed build.
+
+================================================================================
+PRE-RECORDING SCREEN SETUP (DO THIS BEFORE YOU HIT RECORD)
+================================================================================
+1. Open Chrome at http://localhost:3000/
+2. Ensure both backend (port 8000) and frontend (port 3000) are running.
+3. Click "Reset" once in the top right to start clean from Step #0 (12:00 AM IST Day 1).
+4. Start with the browser showing the "Overview" tab.
+5. Set browser zoom to 100% or 90% so the topbar and panels fit cleanly.
+
+================================================================================
+TIMELINE OVERVIEW (THE 6-ACT ARC)
+================================================================================
+[0:00 - 0:25] ACT 1: The Problem & The Hook (Why Central Grids Fail)
+[0:25 - 0:55] ACT 2: Live Macro Simulation (Synoptic Power Flow & Autonomous P2P)
+[0:55 - 1:25] ACT 3: The Quant Core (Real ML Forecaster, Not Mock Data)
+[1:25 - 2:00] ACT 4: The Game-Changer (Interactive What-If Decision Sandbox)
+[2:00 - 2:25] ACT 5: CERC Compliance Shield & Merkle Blockchain Audit
+[2:25 - 2:45] ACT 6: Real-World IoT Architecture & The Grand Finale Close
+
+================================================================================
+SHOT-BY-SHOT SCRIPT & SCREEN ACTION GUIDE
+================================================================================
+
+--------------------------------------------------------------------------------
+ACT 1: THE HOOK & THE PROBLEM
+Timecode : 0:00 - 0:25 (25 seconds)
+Tab      : Overview Tab
+Action   : Cursor hovers over topbar brand "GridMesh" and the 3 Hero KPI cards.
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"India’s power grid is facing a dual crisis: rooftop solar prosumers sell surplus 
+power to DISCOMs for pennies via net-metering, while their neighbors pay full 
+peak retail rates. Meanwhile, uncoordinated EV charging threatens to overheat 
+and trip local distribution transformers.
+
+Meet GridMesh: a decentralized, autonomous multi-agent intelligence platform 
+that enables peer-to-peer clean energy trading, preserves physical grid stability, 
+and settles every kilowatt-hour on an immutable cryptographic ledger."
+
+
+--------------------------------------------------------------------------------
+ACT 2: MACRO SIMULATION & AUTONOMOUS DISPATCH
+Timecode : 0:25 - 0:55 (30 seconds)
+Tab      : Overview Tab
+Action   : Click "Auto Run (4s)" or click "Step +15m" twice.
+           Scroll slightly to show the Synoptic Feeder Flow lines glowing, 
+           the orderbook bids/asks matching, and the live trade ticker populating.
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"In an industrial microgrid, power balancing occurs every 15 minutes. Humans 
+cannot manually log in 96 times a day to click 'buy' or 'sell' 0.3 kWh. Instead, 
+GridMesh deploys autonomous software agents that reason and trade on behalf 
+of every solar home, community battery, and EV charging hub.
+
+Watch the live dispatch cycle: at each 15-minute tick, our agents ingest empirical 
+smart meter telemetry calibrated to Indian irradiance and domestic peak profiles. 
+Surplus solar from Solar Home A is matched with Residential Cluster B via a 
+Continuous Double Auction at ₹6.20 per kilowatt-hour—saving consumers 22% 
+against DISCOM retail while doubling prosumer export earnings."
+
+
+--------------------------------------------------------------------------------
+ACT 3: THE QUANT CORE (REAL MACHINE LEARNING, ZERO HARDCODING)
+Timecode : 0:55 - 1:25 (30 seconds)
+Tab      : Click on "Quant Core" Tab
+Action   : Show the "Model Live: XGBOOST + RANDOM FOREST" badge.
+           Hover over the R² progress bars (95.62% Solar, 70.98% Demand) and 
+           point out the Live Predictions vs Actual Telemetry table.
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"Before any market trade is cleared, our Quant Core must forecast generation 
+and demand 15 minutes into the future. 
+
+This isn't mock data. We trained a Voting Ensemble combining XGBoost and Random 
+Forest on 14,400 empirical observations across 30 days. To eliminate boundary 
+discontinuity, we engineer cyclical trigonometric embeddings—sine and cosine of 
+the 96 daily ticks—alongside autoregressive 15-minute lags.
+
+The result? An R-squared of 95.6% on solar generation and 71% on demand, 
+evaluated on strict out-of-sample unseen operational days to eliminate lookahead 
+leakage."
+
+
+--------------------------------------------------------------------------------
+ACT 4: THE GAME-CHANGER — INTERACTIVE WHAT-IF SANDBOX
+Timecode : 1:25 - 2:00 (35 seconds)
+Tab      : Click on "What-If Sandbox" Tab
+Action   : 1. Click "Noon Solar Export" preset -> show Action flips to "SELL 1.40 kWh".
+           2. Click "Battery Self-Storage" preset -> show Action flips to "CHARGE 0.88 kWh".
+           3. Click "Feeder Overload (BESS)" preset -> show Feeder Stress alert & BESS override.
+           4. Move the Solar slider manually to show live instant recalculation.
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"To prove our multi-agent network is genuinely reasoning and not running on a 
+prerecorded script, we built the Interactive What-If Decision Sandbox. 
+
+Here, anyone can override prosumer inputs in real time. 
+Watch: when solar output is high and the battery is at 92%, the agent exports 
+surplus energy as a P2P Ask. 
+Now, watch what happens when battery SOC drops to 35%: even with surplus solar, 
+the agent's policy instantly flips to 'CHARGE', prioritizing local storage before 
+exporting.
+
+And if demand surges above our 6.0 kW transformer safety limit, the Grid Health 
+agent immediately commands the Community BESS to discharge and shave the peak—
+protecting the transformer from a physical blackout."
+
+
+--------------------------------------------------------------------------------
+ACT 5: COMPLIANCE SHIELD & CRYPTOGRAPHIC BLOCKCHAIN
+Timecode : 2:00 - 2:25 (25 seconds)
+Tab      : Click on "Compliance & Ledger" Tab
+Action   : Show the 5 CERC Regulatory Rules.
+           Click "Inject Rogue Scenario" -> choose "Predatory Price" or "Self-Trade".
+           Show the red violation badge appear immediately.
+           Click "Tamper Block #1" -> click "Verify Chain" -> show the red broken 
+           link banner with tamper detection!
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"Decentralized markets require strict regulatory guardrails. Every transaction 
+passes through our Compliance Agent, enforcing Central Electricity Regulatory 
+Commission (CERC) price collars and volume quotas in under 5 milliseconds. 
+
+If a malicious node injects a predatory bid above the ₹9.00 ceiling, the rule 
+engine immediately voids the trade. 
+
+Every valid transaction is sealed into a SHA-256 Merkle-linked blockchain. 
+If anyone directly tampers with trade volume in the database, our mathematical 
+verification algorithm instantly flags the broken block hash."
+
+
+--------------------------------------------------------------------------------
+ACT 6: PRODUCTION IOT ARCHITECTURE & CLOSE
+Timecode : 2:25 - 2:45 (20 seconds)
+Tab      : Click on "System Design" Tab (or Platform Guide Tab)
+Action   : Show the 8-layer architecture flowchart.
+           Highlight Stage 1: Empirical Ingestion & IoT Edge Telemetry.
+--------------------------------------------------------------------------------
+SPOKEN VOICEOVER:
+"In production, prosumers never manually upload data. Small, on-premise IoT Edge 
+Gateways stream meter and inverter telemetry automatically via MQTT every 15 minutes, 
+allowing prosumers to set their economic preferences once and let their autonomous 
+agents do the rest.
+
+GridMesh delivers a smarter, fairer, and physically resilient distribution grid 
+for India. Thank you."
+
+================================================================================
+CHEATSHEET: HOW TO ANSWER TOUGH QUESTIONS FROM JUDGES
+================================================================================
+
+Q1: "How do normal users upload their data every 15 minutes?"
+A1: "They don't! Microgrids require 100% autonomous data acquisition. Each prosumer 
+     has an IoT Edge Gateway connected to their smart meter via DLMS/COSEM and to 
+     their inverter via Modbus RTU. The gateway automatically streams encrypted 
+     telemetry via MQTT every 15 minutes. Prosumers only configure their preferences 
+     once on a mobile app."
+
+Q2: "Why isn't this a website where people click Buy and Sell?"
+A2: "Because in smart grids conforming to IEEE 2030.7 DER standards, dispatch happens 
+     every 15 minutes (96 intervals a day). Expecting humans to log in 96 times a day 
+     to trade fractions of a kilowatt-hour is physically impossible. Autonomous 
+     software agents execute trades on the prosumer's behalf."
+
+Q3: "How do you avoid lookahead data leakage in your ML model?"
+A3: "We use strict temporal out-of-sample validation: Days 1 through 23 for training, 
+     and Days 24 through 30 for chronological testing. We do not shuffle time-series 
+     data. Furthermore, cyclical trigonometric features (sin/cos of the 96 daily ticks) 
+     allow the tree ensemble to model diurnal solar transitions without midnight 
+     discontinuities."
+
+Q4: "What happens when a node tries to manipulate prices or self-trade?"
+A4: "Our Regulation Agent audits every proposed trade before clearing against 5 statutory 
+     rules (R-01 price collar, R-02 volume cap, R-03 self-trade wash prevention, 
+     R-04 collusion floor, R-05 DT limit). Violations are flagged, logged, and auto-voided 
+     before reaching the blockchain ledger."
+================================================================================
