@@ -13,6 +13,7 @@ htmlcov/
 data/.cache/
 *.csv
 !data/household_15min.csv
+!data/household_multi_day.csv
 household_data_15min_singleindex.csv
 node_modules/
 .next/
