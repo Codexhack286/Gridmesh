@@ -1,93 +1,73 @@
-/* Site-wide design tokens + base theme. Imported once from the root layout
-   (Next.js serves route CSS from here reliably, including `next dev` —
-   a page-level global-CSS import left dev serving an empty stylesheet).
-   Component classes stay in components/topology.css; tokens live here. */
+/* Light-theme design tokens ported verbatim from simulation.html (:root lines 16-44).
+   Base body rules per simulation.html lines 52-61; fonts served locally via
+   next/font (see layout.tsx) exposed as --font-sans / --font-mono. */
 
 :root {
-  --bg: #0a0e14;
-  --bg-deep: #060810;
-  --panel: rgba(255, 255, 255, 0.045);
-  --panel-border: rgba(255, 255, 255, 0.09);
-  --text-primary: #e4e7ec;
-  --text-secondary: #8b93a1;
-  --text-tertiary: #565e6d;
-  --solar: #f5a623;
-  --battery: #2dd4bf;
-  --flow: #4fa3f7;
-  --stress: #ff5c5c;
-  --line-idle: rgba(255, 255, 255, 0.1);
-  /* --font-sans / --font-mono are set by next/font on <html> (see layout.tsx);
-     the stacks below keep working (system fallbacks) even if fonts fail. */
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --brand-blue: #0284c7;
+  --brand-blue-light: #e0f2fe;
+  --green-gen: #10b981;
+  --green-light: #ecfdf5;
+  --amber-warn: #f59e0b;
+  --amber-light: #fef3c7;
+  --red-alert: #ef4444;
+  --red-light: #fef2f2;
+  --purple-agent: #8b5cf6;
+  --purple-light: #f5f3ff;
+  --indigo-reg: #6366f1;
+  --indigo-light: #e0e7ff;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
-  background: var(--bg-deep);
+  background: var(--bg-main);
 }
 
 body {
-  background: radial-gradient(ellipse 120% 80% at 50% -10%, #10151f 0%, var(--bg) 45%, var(--bg-deep) 100%);
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: var(--font-sans, "IBM Plex Sans"), system-ui, sans-serif;
-  margin: 0;
+  line-height: 1.4;
   min-height: 100vh;
-}
-
-h1,
-h2,
-h3 {
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-/* Shared panel treatment for section shells (Topology keeps its own). */
-.shell-panel {
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
-  padding: 22px;
-}
-
-.shell-caption {
-  color: var(--text-secondary);
-  font-size: 13.5px;
-  line-height: 1.5;
-  max-width: 72ch;
-  margin: 4px 0 16px;
-}
-
-.shell-empty {
-  color: var(--text-tertiary);
-  font-size: 13px;
-  padding: 12px 0;
-}
-
-/* Tab nav */
-.tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0 24px;
+  flex-direction: column;
+  overflow-x: hidden;
+  margin: 0;
 }
 
-.tab-btn {
-  font-family: var(--font-sans, "IBM Plex Sans"), system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  padding: 9px 16px;
-  cursor: pointer;
+.mono {
+  font-family: var(--font-mono, monospace);
 }
 
-.tab-btn[aria-selected="true"] {
-  color: var(--text-primary);
-  border-color: var(--flow);
-  background: rgba(79, 163, 247, 0.1);
+/* Scrollbar styling from simulation.html lines 648-661 */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-
-.tab-btn:focus-visible {
-  outline: 2px solid var(--flow);
-  outline-offset: 2px;
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
