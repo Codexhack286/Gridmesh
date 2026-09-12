@@ -25,3 +25,6 @@ graphify-out/.graphify_*.txt
 graphify-out/.graphify_python
 graphify-out/.graphify_root
 graphify-out/cache/
+
+.superpowers/
+.worktrees/
