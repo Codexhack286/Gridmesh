@@ -20,6 +20,18 @@
 
 ## Fixed
 
+### BUG-002 (fixed 2026-09-12) — Live LLM returns flag="none", fallback returns ""
+- *Found:* Backend workout with real Groq key: `test_clean_trade_passes` failed
+  (`assert 'none' == ''`). Passing audits carried a truthy flag, polluting violation
+  semantics for tests/dashboard/counters.
+- *Fix:* `_normalize_flag()` in `agents/regulation.py` maps none/null/n/a → `""`.
+  Evidence: full suite 55 passed with live keys active.
+
+### DOC-001 (fixed 2026-09-12) — Spec `gridmesh_prd.md` deleted in teammate merge
+- *Fix:* Original file restored to repo root (verified: 231 lines, identical header).
+  Evidence: incremental graph scan picks it up as 1 new doc; STATUS spec link live again.
+- *Follow-up:* Consider a PR check that fails if the spec goes missing.
+
 ### LOOP-003 (fixed 2026-09-12) — Ledger is in-memory only
 - *Fix:* Implemented `SQLiteLedger` using stdlib `sqlite3` and swapped it in as the global `LEDGER`. Features WAL mode, persistent storage for trades/audits/violations, and a `GET /api/reports` endpoint computing cumulative metrics natively in SQL.
 

@@ -1,4 +1,4 @@
-.venv/
+﻿.venv/
 __pycache__/
 *.pyc
 *.egg-info/
@@ -27,3 +27,7 @@ graphify-out/.graphify_*.txt
 graphify-out/.graphify_python
 graphify-out/.graphify_root
 graphify-out/cache/
+
+
+*.db-shm
+*.db-wal

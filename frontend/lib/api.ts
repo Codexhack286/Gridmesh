@@ -47,3 +47,18 @@ export async function getQuantStatus() {
   const r = await fetch(`${API_BASE}/api/quant/status`);
   return r.json();
 }
+
+export async function getViolations() {
+  const r = await fetch(`${API_BASE}/api/scenario/violations`);
+  return r.json();
+}
+
+export async function clearViolations() {
+  const r = await fetch(`${API_BASE}/api/scenario/violations`, { method: "DELETE" });
+  return r.json();
+}
+
+export async function getTrades() {
+  const r = await fetch(`${API_BASE}/trades`);
+  return r.json();
+}
