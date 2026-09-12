@@ -48,12 +48,14 @@ export function Header({
   onReset: () => void;
 }) {
   const stressed = stressAggKw >= stressThresholdKw;
-  const dotState = tickFailed ? "offline" : stressed ? "stressed" : "live";
+  const dotState = tickFailed ? "offline" : !running ? "paused" : stressed ? "stressed" : "live";
   const pillText = tickFailed
+    ? "Simulation Error"
+    : !running
     ? "Simulation Paused"
     : stressed
     ? `Grid Stress (${stressAggKw.toFixed(2)} kW)`
-    : "Grid Normal (Stable)";
+    : "Simulation Running (Live)";
 
   return (
     <div style={{ marginBottom: 18 }}>
@@ -89,31 +91,39 @@ export function Header({
             fontWeight: 600,
             padding: "6px 12px",
             borderRadius: 999,
-            background: stressed ? "var(--alert-soft)" : "var(--leaf-soft)",
-            color: stressed ? "#9C1B2E" : "#0C6B3A",
-            border: `1px solid ${stressed ? "rgba(208,34,58,0.2)" : "rgba(18,138,74,0.2)"}`
+            background: stressed ? "var(--alert-soft)" : !running ? "#F1F5F9" : "var(--leaf-soft)",
+            color: stressed ? "#9C1B2E" : !running ? "#475569" : "#0C6B3A",
+            border: `1px solid ${stressed ? "rgba(208,34,58,0.2)" : !running ? "#CBD5E1" : "rgba(18,138,74,0.2)"}`
           }}>
+            <span style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              backgroundColor: stressed ? "var(--alert)" : !running ? "#94A3B8" : "var(--leaf)",
+              display: "inline-block"
+            }} />
             <span>{pillText}</span>
           </div>
 
-          {/* Primary Action Button */}
+          {/* Primary Simulation Controls */}
           <button
-            className="btn btn-primary"
-            onClick={onAdvanceTick}
-            disabled={loading || running}
-            title="Step forward by one 15-minute simulation interval"
+            className={`btn ${running ? "btn-warn" : "btn-primary"}`}
+            onClick={onToggleSim}
+            disabled={loading}
+            title={running ? "Pause automatic 15-minute simulation loop" : "Start automatic 15-minute simulation loop (every 4s)"}
           >
-            <Icon name="play" size={13} />
-            <span>Step 15m</span>
+            <Icon name={running ? "pause" : "play"} size={13} />
+            <span>{running ? "Pause Sim" : "Auto Run (4s)"}</span>
           </button>
 
           <button
             className="btn btn-ghost"
-            onClick={onToggleSim}
-            disabled={loading}
+            onClick={onAdvanceTick}
+            disabled={loading || running}
+            title="Step forward by one 15-minute simulation interval"
           >
-            <Icon name={running ? "pause" : "play"} size={13} />
-            <span>{running ? "Pause Sim" : "Auto Run"}</span>
+            <Icon name="clock" size={13} />
+            <span>Step +15m</span>
           </button>
 
           <button
