@@ -11,6 +11,7 @@ import { QuantPanel } from "../components/QuantPanel";
 import { CompliancePanel } from "../components/CompliancePanel";
 import { SystemDesignFlowchart } from "../components/SystemDesignFlowchart";
 import { PlatformGuide } from "../components/PlatformGuide";
+import { WhatIfSimulator } from "../components/WhatIfSimulator";
 import { DatasetCalibrationBanner } from "../components/DatasetCalibrationBanner";
 import { Icon } from "../components/icons";
 import { useGridStream } from "../hooks/useGridStream";
@@ -282,7 +283,14 @@ export default function Page() {
         </section>
       )}
 
-      {/* ==================== TAB 5: SYSTEM DESIGN ==================== */}
+      {/* ==================== TAB 5: WHAT-IF SANDBOX ==================== */}
+      {activeTab === "sandbox" && (
+        <section>
+          <WhatIfSimulator />
+        </section>
+      )}
+
+      {/* ==================== TAB 6: SYSTEM DESIGN ==================== */}
       {activeTab === "architecture" && (
         <section>
           <SystemDesignFlowchart />

@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import health, ticks, trades, scenarios, reports, blockchain, quant
+from app.api.routes import health, ticks, trades, scenarios, reports, blockchain, quant, simulate
 from app.api.websockets import router as ws_router
 
 app = FastAPI(title="GridMesh")
@@ -20,6 +20,7 @@ app.include_router(scenarios.router)
 app.include_router(reports.router)
 app.include_router(blockchain.router)
 app.include_router(quant.router)
+app.include_router(simulate.router)
 app.include_router(ws_router)
 
 

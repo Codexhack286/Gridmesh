@@ -1,7 +1,7 @@
 "use client";
 import { Icon, type IconName } from "./icons";
 
-export type TabId = "overview" | "decisions" | "compliance" | "quant" | "architecture" | "guide";
+export type TabId = "overview" | "decisions" | "compliance" | "quant" | "sandbox" | "architecture" | "guide";
 
 interface TabItem {
   id: TabId;
@@ -14,6 +14,7 @@ const TABS: TabItem[] = [
   { id: "decisions", label: "Decisions & Market", icon: "handshake" },
   { id: "compliance", label: "Compliance & Ledger", icon: "shield-check" },
   { id: "quant", label: "Quant Core", icon: "brain" },
+  { id: "sandbox", label: "What-If Sandbox", icon: "flask" },
   { id: "architecture", label: "System Design", icon: "circuitry" },
   { id: "guide", label: "Platform Guide", icon: "sliders" },
 ];
