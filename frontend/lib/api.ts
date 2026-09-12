@@ -57,3 +57,8 @@ export async function clearViolations() {
   const r = await fetch(`${API_BASE}/api/scenario/violations`, { method: "DELETE" });
   return r.json();
 }
+
+export async function getTrades() {
+  const r = await fetch(`${API_BASE}/trades`);
+  return r.json();
+}

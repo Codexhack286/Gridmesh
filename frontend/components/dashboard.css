@@ -407,3 +407,210 @@ svg.grid-canvas {
   margin-bottom: 2px;
   color: var(--text-secondary);
 }
+
+/* Orderbook & Trade Ticker */
+.orderbook-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.orderbook-table th {
+  background: #f1f5f9;
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.orderbook-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.trade-row-sell {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.trade-row-buy {
+  color: #0369a1;
+  background: rgba(2, 132, 199, 0.04);
+}
+
+.trade-ticker {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.trade-item {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.trade-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-cleared {
+  background: var(--green-light);
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+/* Agent Decision Transcript Stream */
+.transcript-stream {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 6px;
+  max-height: 520px;
+}
+
+.agent-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: all 0.2s;
+}
+
+.agent-card:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: #cbd5e1;
+}
+
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.agent-name {
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agent-icon-wrap {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.agent-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.agent-reasoning {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  background: #f8fafc;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid #cbd5e1;
+  margin-top: 4px;
+}
+
+.tag-prosumer { color: var(--purple-agent); background: var(--purple-light); }
+.tag-grid { color: var(--red-alert); background: var(--red-light); }
+.tag-trading { color: var(--brand-blue); background: var(--brand-blue-light); }
+.tag-forecast { color: #059669; background: #ecfdf5; }
+.tag-opt { color: #d97706; background: #fffbeb; }
+.tag-comp { color: var(--indigo-reg); background: var(--indigo-light); }
+
+/* Bottom Accordion / Optional Blockchain Explorer */
+.blockchain-banner {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin: 0 24px 20px 24px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.blockchain-header {
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: background 0.2s;
+}
+
+.blockchain-header:hover {
+  background: #f1f5f9;
+}
+
+.blockchain-title {
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #334155;
+}
+
+.blocks-stream {
+  padding: 14px 18px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  background: #ffffff;
+  border-top: 1px solid var(--border-color);
+}
+
+.block-card {
+  min-width: 240px;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.block-card.latest {
+  border-color: #38bdf8;
+  background: #f0f9ff;
+}
+
+.hash-val {
+  color: #0284c7;
+  word-break: break-all;
+}
