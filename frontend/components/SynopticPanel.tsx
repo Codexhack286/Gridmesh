@@ -163,7 +163,7 @@ export function SynopticPanel({
                 {loadPct === null ? "Load: —" : `Load: ${loadPct.toFixed(0)}%`}
               </text>
               <text x="70" y="202" textAnchor="middle" className="node-metric">
-                {hasData ? `T${data.tick} ${tickClock(data.tick)}` : "awaiting tick"}
+                {hasData ? `${tickClock(data.tick, false)} · #${data.tick}` : "awaiting tick"}
               </text>
             </g>
 

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "./icons";
-import { truncateHash } from "../lib/utils";
+import { truncateHash, tickClock } from "../lib/utils";
 
 interface CompliancePanelProps {
   chain: any[] | null;
@@ -239,7 +239,7 @@ export function CompliancePanel({
             return (
               <div key={b.block_index} style={{ display: "flex", alignItems: "center" }}>
                 <div className={`block-item-card${isTampered ? " tampered" : i === 0 ? " latest" : ""}`}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
                     <span className="block-index-badge">
                       Block #{b.block_index}
                     </span>
@@ -248,6 +248,9 @@ export function CompliancePanel({
                         CORRUPTED
                       </span>
                     )}
+                  </div>
+                  <div style={{ fontSize: 10, color: "var(--slate)", marginBottom: 6 }}>
+                    {tickClock(b.block_index, true)}
                   </div>
                   <div className="block-counts-row">
                     <span className="count-chip">{b.trade_count} Trades</span>

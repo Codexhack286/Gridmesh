@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Icon } from "./icons";
-import { truncateHash } from "../lib/utils";
+import { truncateHash, tickClock } from "../lib/utils";
 
 export interface ChainBlock {
   block_index: number;
@@ -128,6 +128,9 @@ export function BlockchainBanner({
                   <span style={{ fontSize: 9, opacity: 0.8 }}>
                     {b.trade_count} trades / {b.audit_count} audits
                   </span>
+                </div>
+                <div style={{ fontSize: 10, color: "var(--slate)", margin: "2px 0 4px" }}>
+                  {tickClock(b.block_index, true)}
                 </div>
                 <div>
                   Prev Hash: <span className="hash-val">{truncateHash(b.prev_hash ?? "")}</span>

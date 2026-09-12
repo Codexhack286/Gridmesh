@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { postTick, getReports, getBlockchainStatus, postRogueBid, clearViolations } from "../lib/api";
+import { postTick, getReports, getBlockchainStatus, postRogueBid, clearViolations, resetTick } from "../lib/api";
 
 export interface TickPoint { tick: number; solarKw: number; loadKw: number; }
 const HISTORY_CAP = 20;
@@ -61,7 +61,12 @@ export function useGridStream() {
   }, [refreshMeta]);
 
   const reset = useCallback(async () => {
-    try { await clearViolations(); } catch { /* backend unreachable */ }
+    try {
+      await resetTick();
+      await clearViolations();
+    } catch { /* backend unreachable */ }
+    setData(null);
+    setTickHistory([]);
     await refreshMeta();
   }, [refreshMeta]);
 

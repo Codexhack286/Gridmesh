@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from "./icons";
+import { formatIST } from "../lib/utils";
 
 interface QuantPanelProps {
   quantStatus: any;
@@ -17,7 +18,7 @@ const PARTICIPANTS_SPEC = [
 export function QuantPanel({ quantStatus, data }: QuantPanelProps) {
   const isLive = quantStatus?.status === "live";
   const modelName = quantStatus?.model ? String(quantStatus.model).toUpperCase() : "XGBOOST + RANDOM FOREST";
-  const lastUpdated = quantStatus?.last_updated ? new Date(quantStatus.last_updated).toUTCString() : "Active Session";
+  const lastUpdated = formatIST(quantStatus?.last_updated);
 
   return (
     <div className="card-light">

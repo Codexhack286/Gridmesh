@@ -103,6 +103,7 @@ export default function Page() {
   const handleReset = useCallback(async () => {
     setRunning(false);
     await reset();
+    setTradesHistory([]);
     await violations.refresh();
     await chain.refreshChain();
     await quant.refresh();

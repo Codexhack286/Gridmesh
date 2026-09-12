@@ -58,6 +58,12 @@ export async function clearViolations() {
   return r.json();
 }
 
+export async function resetTick() {
+  const r = await fetch(`${API_BASE}/tick/reset`, { method: "POST" });
+  return r.json();
+}
+
+
 export async function getTrades() {
   const r = await fetch(`${API_BASE}/trades`);
   return r.json();

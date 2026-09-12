@@ -125,3 +125,11 @@ def tick() -> dict:
         ),
         "decision_log": decision_log,
     }
+
+
+@router.post("/tick/reset")
+def reset_tick() -> dict:
+    """Reset the simulated 15-minute dispatch clock back to Step 0 (00:00 AM IST Day 1)."""
+    CLOCK.reset()
+    return {"status": "ok", "tick": 0}
+

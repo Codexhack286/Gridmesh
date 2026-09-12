@@ -110,8 +110,9 @@ export function Header({
         {/* Tier 2: Live Telemetry, Model Status & Compliance Strip */}
         <div className="topbar-row-secondary">
           <div className="topbar-status-left">
-            <div className="clock-pill">
+            <div className="clock-pill" title="Simulated 15-minute microgrid dispatch clock (96 intervals = 1 full 24-hour cycle)">
               <span className={`pill-dot ${dotState}`} />
+              <Icon name="clock" size={12} />
               <span>{clockLabel}</span>
             </div>
 
