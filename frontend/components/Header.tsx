@@ -65,7 +65,7 @@ export function Header({
           </div>
           <div className="brand-text">
             <span className="brand-title-grad">GridMesh</span>
-            <span className="brand-subtitle-light">Decentralized Energy Intelligence Platform • OPSD Telemetry</span>
+            <span className="brand-subtitle-light">Decentralized Energy Intelligence Platform • Indian Smart Microgrid Framework</span>
           </div>
         </div>
 

@@ -19,11 +19,11 @@ interface CompliancePanelProps {
 }
 
 const RULES = [
-  { id: "R-01", name: "Price Ceiling ($0.30/kWh max)", detail: "Trade cleared within legal microgrid price bounds", hash: "8204f887a1", pass: true },
-  { id: "R-02", name: "Volume Cap (10.0 kWh per trade)", detail: "Transaction volume complies with quota limits", hash: "3af921bc44", pass: true },
-  { id: "R-03", name: "Self-Trade Guard (Wash Prevention)", detail: "Buyer and seller identities are distinct", hash: "9c15e04af3", pass: true },
-  { id: "R-04", name: "Collusion Floor ($0.28/kWh check)", detail: "No synchronized off-market price dumping detected", hash: "5b3d77f109", pass: true },
-  { id: "R-05", name: "Feeder Line Limit (8.0 kW saturation)", detail: "Substation transmission threshold observed", hash: "e02c6f3891", pass: true },
+  { id: "R-01", name: "CERC Price Ceiling (₹9.00/kWh max)", detail: "Trade cleared within CERC / SERC microgrid tariff ceiling", hash: "8204f887a1", pass: true },
+  { id: "R-02", name: "SERC Volume Quota (10.0 kWh cap)", detail: "Transaction volume complies with distributed net metering quota limits", hash: "3af921bc44", pass: true },
+  { id: "R-03", name: "Self-Trade Guard (Wash Prevention)", detail: "Buyer and seller consumer identities are strictly distinct", hash: "9c15e04af3", pass: true },
+  { id: "R-04", name: "Collusion Floor (₹4.00/kWh check)", detail: "No synchronized predatory dumping below generation cost detected", hash: "5b3d77f109", pass: true },
+  { id: "R-05", name: "Distribution Transformer (DT) Limit (8.0 kW)", detail: "DT thermal capacity and IEGC technical reserve threshold observed", hash: "e02c6f3891", pass: true },
 ];
 
 export function CompliancePanel({

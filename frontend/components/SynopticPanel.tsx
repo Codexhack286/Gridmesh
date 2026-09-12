@@ -5,7 +5,7 @@ import { Icon } from "./icons";
 
 const TelemetryChart = dynamic(() => import("./TelemetryChart"), { ssr: false });
 
-import { tickClock } from "../lib/utils";
+import { tickClock, INDIA_P2P_CLEARING_INR } from "../lib/utils";
 export { tickClock };
 
 const NODE_META: Record<string, { label: string; y: number }> = {
@@ -74,9 +74,8 @@ export function SynopticPanel({
   const loadPct = hasStress ? (aggKw / thresholdKw) * 100 : null;
   const stressed = hasStress && aggKw >= thresholdKw;
   const p2pKwh = Number(reports?.community?.total_kwh_traded);
-  const p2pAvg = Number(reports?.community?.p2p_avg_price_usd);
   const hasP2p = Number.isFinite(p2pKwh);
-  const priceCents = Number.isFinite(p2pAvg) ? (p2pAvg * 100).toFixed(1) : null;
+  const priceInr = INDIA_P2P_CLEARING_INR;
 
   const xfmrColor = loadPct === null ? undefined : loadPct >= 100 ? "#ef4444" : loadPct >= 80 ? "#0284c7" : "#10b981";
 
@@ -96,9 +95,9 @@ export function SynopticPanel({
           <div className="card-subtitle">Real-time low-voltage topology &amp; bi-directional power flows</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>● Solar Gen</span>
-          <span style={{ fontSize: 11, color: "#0284c7", fontWeight: 600 }}>● P2P Flow</span>
-          <span style={{ fontSize: 11, color: "#f59e0b", fontWeight: 600 }}>● Battery BESS</span>
+          <span style={{ fontSize: 11, color: "#10b981", fontWeight: 600 }}>Solar Gen</span>
+          <span style={{ fontSize: 11, color: "#0284c7", fontWeight: 600 }}>• P2P Flow</span>
+          <span style={{ fontSize: 11, color: "#f59e0b", fontWeight: 600 }}>• Battery BESS</span>
         </div>
       </div>
 
@@ -132,7 +131,7 @@ export function SynopticPanel({
             <div className="kpi-value" style={{ color: "#8b5cf6" }}>
               {hasP2p ? `${p2pKwh.toFixed(2)} kWh` : "—"}
             </div>
-            <div className="kpi-sub">{priceCents === null ? "no clears yet" : `Avg ${priceCents}¢/kWh`}</div>
+            <div className="kpi-sub">{hasP2p ? `Avg ₹${priceInr.toFixed(2)}/kWh` : "no clears yet"}</div>
           </div>
         </div>
 
@@ -192,7 +191,7 @@ export function SynopticPanel({
             <circle cx="550" cy="180" r="32" fill="#eff6ff" stroke="#0284c7" strokeWidth="2" />
             <text x="550" y="177" textAnchor="middle" fontSize="10" fontWeight="700" fill="#0284c7">P2P Hub</text>
             <text x="550" y="190" textAnchor="middle" fontSize="9" fill="#0369a1" fontFamily="monospace">
-              {priceCents === null ? "—" : `${priceCents}¢/kWh`}
+              {hasP2p ? `₹${priceInr.toFixed(2)}/u` : "—"}
             </text>
           </svg>
 

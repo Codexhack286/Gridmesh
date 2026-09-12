@@ -67,9 +67,9 @@ const LAYERS: LayerNode[] = [
     technicalSpecs: [
       "Descending buyer bid queue vs. ascending seller ask queue",
       "Clearing price set at supply-demand midpoint: P_clear = (P_bid + P_ask) / 2",
-      "Guaranteed pareto-superior outcomes: Buyers save 15%, sellers earn +218% vs. utility"
+      "Guaranteed pareto-superior outcomes: Buyers save ~31% vs. DISCOM, sellers earn +112% vs. solar feed-in"
     ],
-    metrics: "$0.255/kWh P2P Avg vs. $0.30 Utility Retail"
+    metrics: "₹5.50/kWh P2P Avg vs. ₹8.00 DISCOM Retail"
   },
   {
     id: "compliance",
@@ -79,11 +79,11 @@ const LAYERS: LayerNode[] = [
     color: "#D0223A",
     summary: "Audits every transaction against microgrid rules prior to settlement, auto-voiding rogue bids.",
     technicalSpecs: [
-      "R-01: Price ceiling audit (max $0.30/kWh to prevent predatory surge gouging)",
-      "R-02: Volume transaction cap (10.0 kWh per-trade ceiling)",
+      "R-01: CERC Price ceiling audit (max ₹9.00/kWh to prevent predatory surge gouging)",
+      "R-02: SERC Volume transaction quota (10.0 kWh per-trade ceiling)",
       "R-03: Self-trade guard (rejects wash trades where buyer equals seller)",
-      "R-04: Collusion detector (flags coordinated low-price transfer patterns)",
-      "R-05: Feeder line limit (enforces 8.0 kW physical transmission saturation limit)"
+      "R-04: Anti-collusion detector (flags coordinated transfers below ₹4.00/kWh)",
+      "R-05: Distribution Transformer line limit (enforces 8.0 kW physical saturation limit)"
     ],
     metrics: "100% Trades Audited • Sub-5ms Enforcement"
   },

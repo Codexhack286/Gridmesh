@@ -26,20 +26,20 @@ export function PlatformGuide() {
             The Problem &amp; Core Value
           </h3>
           <p style={{ fontSize: 13, color: "var(--slate)", lineHeight: 1.5, margin: "6px 0 14px" }}>
-            Conventional power grids operate as a centralized one-way pipeline. When neighbors generate solar surplus, centralized utilities purchase it at minimal feed-in tariffs ($0.08/kWh) and resell it to adjacent households at full retail rates ($0.30/kWh). Meanwhile, uncoordinated EV charging risks local transformer overload and brownouts.
+            Conventional power grids operate as a centralized one-way pipeline. When prosumers generate rooftop solar surplus, state DISCOMs purchase it at minimal net-metering feed-in tariffs (₹2.60/kWh) and resell it to neighboring households at full retail rates (₹8.00/kWh). Meanwhile, uncoordinated EV charging risks local Distribution Transformer (DT) overload and brownouts.
           </p>
           <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8, fontSize: 12.5 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--slate-soft)" }}>Consumer Electricity Savings:</span>
-              <strong style={{ color: "var(--leaf)" }}>~15% below utility retail</strong>
+              <strong style={{ color: "var(--leaf)" }}>~31% below DISCOM retail (saves ₹2.50/kWh)</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "var(--slate-soft)" }}>Prosumer Export Profit:</span>
-              <strong style={{ color: "var(--current)" }}>+218% vs. feed-in tariff</strong>
+              <strong style={{ color: "var(--current)" }}>+112% vs. DISCOM net-metering buyback</strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "var(--slate-soft)" }}>Feeder Overload Protection:</span>
-              <strong style={{ color: "var(--ink)" }}>Automated BESS dispatch (&lt;6.0 kW)</strong>
+              <span style={{ color: "var(--slate-soft)" }}>Distribution Transformer Protection:</span>
+              <strong style={{ color: "var(--ink)" }}>Automated BESS dispatch (&lt;6.0 kW DT limit)</strong>
             </div>
           </div>
         </div>
@@ -201,13 +201,13 @@ export function PlatformGuide() {
                 <td><strong>Prosumer (×5)</strong></td>
                 <td>Manages local assets, battery SOC &amp; bids</td>
                 <td>LLM + State Heuristic</td>
-                <td><em>"Battery at 82%; offered 1.6 kWh surplus for sale at $0.24"</em></td>
+                <td><em>"Battery at 82%; offered 1.6 kWh surplus for sale at ₹5.40/kWh"</em></td>
               </tr>
               <tr>
                 <td><strong>Trading</strong></td>
                 <td>Matches buyers/sellers, sets clearing price</td>
                 <td>Continuous Double Auction</td>
-                <td><em>"Matched Solar Home A with EV Hub C at $0.255/kWh"</em></td>
+                <td><em>"Matched Solar Home A with EV Hub C at ₹5.50/kWh"</em></td>
               </tr>
               <tr>
                 <td><strong>Grid Health</strong></td>
@@ -242,28 +242,28 @@ export function PlatformGuide() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
           <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--alert)" }}>RULE R-01</span>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Price Ceiling</div>
-            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum $0.30/kWh. Prevents predatory surge gouging during extreme heatwaves.</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Price Ceiling (CERC)</div>
+            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum ₹9.00/kWh. CERC tariff ceiling prevents predatory surge pricing above retail grid benchmark.</div>
           </div>
           <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--sun)" }}>RULE R-02</span>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Volume Cap</div>
-            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum 10.0 kWh per single trade. Blocks bulk market dumping and monopoly cornering.</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Volume Quota Cap</div>
+            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum 10.0 kWh per single trade. Enforces SERC distributed solar capacity allocation.</div>
           </div>
           <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--voltage)" }}>RULE R-03</span>
             <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Self-Trade Guard</div>
-            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Buyer ID must not equal Seller ID. Rejects wash trading and artificial volume inflation.</div>
+            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Buyer ID must not equal Seller ID. Rejects wash trading and artificial volume manipulation.</div>
           </div>
           <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--current)" }}>RULE R-04</span>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Collusion Floor</div>
-            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Flags non-competitive coordinated transfers below $0.28/kWh between related accounts.</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Anti-Collusion Floor</div>
+            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Flags non-competitive coordinated transfers below ₹4.00/kWh between related accounts.</div>
           </div>
           <div style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: "var(--radius-sm)", background: "var(--paper)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--alert)" }}>RULE R-05</span>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Feeder Line Limit</div>
-            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum 8.0 kW aggregate load. Halts trade routing that would physically trip substation breakers.</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink)", marginTop: 2 }}>Distribution Transformer Limit</div>
+            <div style={{ fontSize: 12, color: "var(--slate)", marginTop: 4 }}>Maximum 8.0 kW aggregate load. Halts trade routing that would physically trip substation feeder breakers.</div>
           </div>
         </div>
       </div>

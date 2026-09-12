@@ -17,7 +17,13 @@ import { useBlockchain } from "../hooks/useBlockchain";
 import { useQuant } from "../hooks/useQuant";
 import { useViolations } from "../hooks/useViolations";
 import { getTrades } from "../lib/api";
-import { tickClock } from "../lib/utils";
+import {
+  tickClock,
+  INDIA_GRID_TARIFF_INR,
+  INDIA_P2P_CLEARING_INR,
+  INDIA_CEA_CO2_FACTOR_KG,
+  formatINR,
+} from "../lib/utils";
 
 const TICK_INTERVAL_MS = 4000;
 
@@ -122,22 +128,22 @@ export default function Page() {
   const clock = data ? `${tickClock(data.tick)} (Step #${data.tick})` : "Awaiting First Tick";
   const quantModel = quant.status?.status === "live" ? `ML: ${quant.status.model ?? "xgboost"}` : quant.status ? "ML: fallback" : null;
 
-  // Dynamic session cumulative KPIs
+  // Dynamic session cumulative KPIs with Indian metrics
   const totalEnergyTraded = useMemo(() => {
     return tradesHistory.reduce((acc, t) => acc + (Number(t.qty_kwh) || 0), 0);
   }, [tradesHistory]);
 
-  const totalSavedDollars = useMemo(() => {
+  const totalSavedINR = useMemo(() => {
     return tradesHistory.reduce((acc, t) => {
       const qty = Number(t.qty_kwh) || 0;
-      const price = Number(t.clearing_price) || 0.255;
-      const retail = 0.30;
-      return acc + Math.max(0, qty * (retail - price));
+      const retail = INDIA_GRID_TARIFF_INR; // DISCOM retail rate (₹8.00/kWh)
+      const p2p = INDIA_P2P_CLEARING_INR;   // P2P clearing rate (₹5.50/kWh)
+      return acc + Math.max(0, qty * (retail - p2p));
     }, 0);
   }, [tradesHistory]);
 
   const totalCo2Avoided = useMemo(() => {
-    return totalEnergyTraded * 0.233; // EU benchmark kg CO2 per kWh
+    return totalEnergyTraded * INDIA_CEA_CO2_FACTOR_KG; // Indian Central Electricity Authority benchmark (0.716 kg CO2/kWh)
   }, [totalEnergyTraded]);
 
   return (
@@ -178,9 +184,9 @@ export default function Page() {
                 <span className="kpi-icon"><Icon name="scales" size={18} /></span>
               </div>
               <div className="kpi-number">
-                {totalSavedDollars > 0 ? `$${totalSavedDollars.toFixed(2)}` : "$0.62"}
+                {totalSavedINR > 0 ? formatINR(totalSavedINR) : formatINR(6.00)}
               </div>
-              <div className="kpi-label">Saved vs. Grid Retail Tariff</div>
+              <div className="kpi-label">Saved vs. DISCOM Tariff (₹8.00/kWh)</div>
             </div>
 
             <div className="kpi-card co2">
@@ -188,9 +194,9 @@ export default function Page() {
                 <span className="kpi-icon"><Icon name="sun" size={18} /></span>
               </div>
               <div className="kpi-number">
-                {totalCo2Avoided > 0 ? `${totalCo2Avoided.toFixed(3)} kg` : "0.104 kg"}
+                {totalCo2Avoided > 0 ? `${totalCo2Avoided.toFixed(3)} kg` : "1.718 kg"}
               </div>
-              <div className="kpi-label">CO2 Carbon Emissions Avoided</div>
+              <div className="kpi-label">CO2 Avoided (CEA 0.716 kg/kWh)</div>
             </div>
           </div>
 

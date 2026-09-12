@@ -34,8 +34,8 @@ RULES: list[dict] = [
         "enforcement": "void_trade",
         "check": lambda t: float(t["clearing_price"]) > config.PRICE_CAP,
         "rationale": lambda t: (
-            f"Predatory pricing: clearing price {float(t['clearing_price']):.4f} $/kWh "
-            f"exceeds collar ceiling {config.PRICE_CAP:.2f} $/kWh. "
+            f"Predatory pricing: clearing price {float(t['clearing_price']):.4f} ₹/kWh "
+            f"exceeds collar ceiling {config.PRICE_CAP:.2f} ₹/kWh. "
             f"Trade voided — sellers may not charge above the grid reference price."
         ),
     },
@@ -73,7 +73,7 @@ RULES: list[dict] = [
         ),
         "rationale": lambda t: (
             f"Collusion signal: simultaneous high price "
-            f"({float(t['clearing_price']):.4f} > {config.COLLUSION_PRICE_FLOOR} $/kWh) "
+            f"({float(t['clearing_price']):.4f} > {config.COLLUSION_PRICE_FLOOR} ₹/kWh) "
             f"and high quantity ({float(t['qty_kwh']):.2f} > {config.COLLUSION_QTY_FLOOR} kWh). "
             f"Pattern consistent with coordinated price manipulation. Alert raised."
         ),
@@ -142,7 +142,7 @@ def _audit_single(
     # Clean trade → LLM spot-check (with cached fallback for offline mode)
     out = complete_json(
         f"Audit P2P trade: buyer='{trade['buyer_id']}' seller='{trade['seller_id']}' "
-        f"qty={float(trade['qty_kwh']):.3f} kWh price={float(trade['clearing_price']):.4f} $/kWh. "
+        f"qty={float(trade['qty_kwh']):.3f} kWh price={float(trade['clearing_price']):.4f} ₹/kWh. "
         f"Rules: price <= {config.PRICE_CAP}, qty <= {config.QTY_CAP}, "
         f"no self-trade, no collusion (price>{config.COLLUSION_PRICE_FLOOR} AND "
         f"qty>{config.COLLUSION_QTY_FLOOR}). "

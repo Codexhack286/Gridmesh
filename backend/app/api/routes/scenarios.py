@@ -29,7 +29,7 @@ _MULTI  = "multi"
 SCENARIOS: dict[str, dict] = {
     "predatory_price": {
         "kind": _SINGLE,
-        "description": "Seller charges 0.45 $/kWh — 50% above the 0.30 $/kWh collar.",
+        "description": "Seller charges 0.45 ₹/kWh — 50% above the 0.30 ₹/kWh collar.",
         "trade": {
             "buyer_id": "household",
             "seller_id": "solar_home",

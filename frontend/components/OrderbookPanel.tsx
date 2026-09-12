@@ -1,7 +1,7 @@
 "use client";
 import { Icon } from "./icons";
 
-import { tickClock } from "../lib/utils";
+import { tickClock, INDIA_GRID_TARIFF_INR, INDIA_P2P_CLEARING_INR, formatINR } from "../lib/utils";
 export { tickClock };
 
 const LABELS: Record<string, string> = {
@@ -41,9 +41,8 @@ export function OrderbookPanel({
   const history: Trade[] = Array.isArray(tradesHistory) ? tradesHistory : [];
 
   const community = reports?.community ?? {};
-  const grid = Number(community.grid_price_reference_usd ?? 0.3);
-  const p2pAvg = Number(community.p2p_avg_price_usd ?? 0.255);
-  const orderPriceCents = ((Number(community.p2p_avg_price_usd ?? 0.255)) * 100).toFixed(1);
+  const gridInr = INDIA_GRID_TARIFF_INR;
+  const p2pAvgInr = INDIA_P2P_CLEARING_INR;
 
   const asks = decisions.filter(
     (d) => String(d?.action).toLowerCase() === "sell" && Number(d?.qty_kwh) > 0
@@ -54,8 +53,6 @@ export function OrderbookPanel({
   const rows = [...asks, ...bids];
 
   const byIndex = new Map<number, Trade>();
-  // History rows come from GET /trades (SQLite SELECT * → `id` column);
-  // current-tick rows come from LEDGER.append (`index` field). Normalize.
   for (const t of [...history, ...currentTrades]) {
     const key = typeof t?.index === "number" ? t.index : (t as any)?.id;
     if (t && typeof key === "number") byIndex.set(key, { ...t, index: key });
@@ -63,13 +60,16 @@ export function OrderbookPanel({
   const ticker = [...byIndex.values()].sort((a, b) => b.index - a.index).slice(0, 12);
 
   const hasClears = currentTrades.length > 0;
+  const totalTradedKwh = Number(community.total_kwh_traded ?? 0);
+  const totalSavingsInr = totalTradedKwh * (gridInr - p2pAvgInr);
+  const co2AvoidedKg = totalTradedKwh * 0.716;
 
   return (
     <section className="card">
       <div className="card-header">
         <div className="card-title">
           <Icon name="handshake" size={14} />
-          <span>P2P Energy Marketplace</span>
+          <span>P2P Energy Marketplace (Indian Grid)</span>
         </div>
         {hasClears ? (
           <span className="trade-badge badge-cleared">Active Clearing</span>
@@ -101,7 +101,7 @@ export function OrderbookPanel({
                     <td>{isSell ? "ASK" : "BID"}</td>
                     <td>{labelFor(pid)}</td>
                     <td>{Number(d?.qty_kwh).toFixed(2)}</td>
-                    <td>{orderPriceCents}¢</td>
+                    <td>₹{p2pAvgInr.toFixed(2)}/u</td>
                   </tr>
                 );
               })
@@ -109,17 +109,17 @@ export function OrderbookPanel({
           </tbody>
         </table>
 
-        <div style={{ display: "flex", gap: 12, fontSize: 11, marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 14, fontSize: 11.5, marginBottom: 12 }}>
           <span>
-            Grid Retail Rate{" "}
+            DISCOM Retail Rate:{" "}
             <strong className="mono" style={{ color: "#ef4444" }}>
-              {(grid * 100).toFixed(1)}¢/kWh
+              ₹{gridInr.toFixed(2)}/kWh
             </strong>
           </span>
           <span>
-            P2P Clearing{" "}
+            P2P Clearing:{" "}
             <strong className="mono" style={{ color: "#0284c7" }}>
-              {(p2pAvg * 100).toFixed(1)}¢/kWh
+              ₹{p2pAvgInr.toFixed(2)}/kWh
             </strong>
           </span>
         </div>
@@ -131,9 +131,9 @@ export function OrderbookPanel({
             </div>
           ) : (
             ticker.map((t) => {
-              const savings = (grid - p2pAvg) * Number(t.qty_kwh ?? 0);
-              const savingsLabel =
-                savings >= 0 ? `+$${savings.toFixed(2)}` : `-$${Math.abs(savings).toFixed(2)}`;
+              const qty = Number(t.qty_kwh ?? 0);
+              const savings = (gridInr - p2pAvgInr) * qty;
+              const savingsLabel = savings >= 0 ? `+${formatINR(savings)}` : `-${formatINR(Math.abs(savings))}`;
               return (
                 <div key={t.index} className="trade-item">
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -144,8 +144,7 @@ export function OrderbookPanel({
                       </span>
                     </div>
                     <div className="mono" style={{ color: "var(--text-secondary)" }}>
-                      {Number(t.qty_kwh).toFixed(2)} kWh @ {(Number(t.clearing_price) * 100).toFixed(1)}
-                      ¢/kWh · {tickClock(Number(t.tick ?? 0))}
+                      {qty.toFixed(2)} kWh @ ₹{p2pAvgInr.toFixed(2)}/kWh · {tickClock(Number(t.tick ?? 0))}
                     </div>
                   </div>
                   <div className="mono" style={{ color: "#047857", fontWeight: 700 }}>
@@ -166,9 +165,8 @@ export function OrderbookPanel({
             marginTop: 8,
           }}
         >
-          CO₂ Avoided {Number(community.co2_avoided_kg ?? 0).toFixed(1)} kg · Community Savings $
-          {Number(community.financial_savings_usd ?? 0).toFixed(2)} ·{" "}
-          {Number(community.total_kwh_traded ?? 0).toFixed(2)} kWh traded
+          CO₂ Avoided: {co2AvoidedKg.toFixed(1)} kg (CEA India 0.716 kg/kWh) · Community Savings:{" "}
+          {formatINR(totalSavingsInr)} · {totalTradedKwh.toFixed(2)} kWh traded
         </div>
       </div>
     </section>
