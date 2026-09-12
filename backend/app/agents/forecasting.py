@@ -88,12 +88,16 @@ class ForecastingAgent(BaseAgent):
             tick_of_day = tick % 96
             hour = (tick_of_day * 15) // 60
             minute = (tick_of_day * 15) % 60
+            day_of_week = (tick // 96) % 7
+            is_weekend = 1.0 if day_of_week >= 5 else 0.0
             sin_time = float(np.sin(2 * np.pi * tick_of_day / 96))
             cos_time = float(np.cos(2 * np.pi * tick_of_day / 96))
 
             feat_dict: dict[str, float] = {
                 "hour": float(hour),
                 "minute": float(minute),
+                "day_of_week": float(day_of_week),
+                "is_weekend": float(is_weekend),
                 "tick_of_day": float(tick_of_day),
                 "sin_time": sin_time,
                 "cos_time": cos_time,
