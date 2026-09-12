@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from app.agents.regulation import RegulationAgent
 from app.api.violation_log import VIOLATION_LOG
 from app.core import config
+from app.ledger.table import LEDGER
 
 router = APIRouter(prefix="/api/scenario")
 
@@ -127,7 +128,11 @@ def inject_rogue_bid(req: RogueBidRequest) -> dict:
     # Run through RegulationAgent (with injected=True so ViolationLog marks them)
     state = {"trades": trades, "tick": req.tick, "injected": True}
     result = RegulationAgent().run(state)
-    audits = result["audits"]
+    # Persist EVERY audit to SQLite (durable source of truth, survives restart).
+    # VIOLATION_LOG is kept as the live session cache (flagged-only quick reads
+    # for /violations + /reports); it already received flagged events inside the
+    # agent, so both stores now agree instead of silently diverging.
+    audits = [LEDGER.append_audit(a) for a in result["audits"]]
 
     # Summarise
     flagged = [a for a in audits if not a["passed"]]

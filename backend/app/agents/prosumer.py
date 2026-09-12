@@ -28,8 +28,18 @@ from app.llm.client import complete_json
 
 def _parse_reserve(text: str, default: float = 30.0) -> float:
     """Extract reserve % from free-text. 'Keep 30% battery reserve' → 30.0"""
+    v = parse_reserve_or_none(text)
+    return v if v is not None else default
+
+
+def parse_reserve_or_none(text: str) -> float | None:
+    """Extract reserve % or None when the preference states no explicit reserve.
+
+    Lets peak-shaving fall back to the global floor instead of the
+    prosumer-tier default.
+    """
     m = re.search(r"(\d+(?:\.\d+)?)\s*%\s*(?:battery\s*)?reserve", text, re.I)
-    return float(m.group(1)) if m else default
+    return float(m.group(1)) if m else None
 
 
 def _parse_sell_threshold(text: str, default: float = 80.0) -> float:
@@ -155,11 +165,24 @@ class ProsumerAgent(BaseAgent):
                 raw_qty = float(out.get("qty_kwh", available_kwh))
                 qty = round(min(raw_qty, available_kwh), 3)  # hard cap: can't sell more than surplus
                 battery_action = str(out.get("battery_action", "hold"))
-                rationale = str(out.get(
+                raw_rationale = str(out.get(
                     "rationale",
                     f"SOC {battery_soc:.1f}% >= threshold {sell_threshold_pct:.0f}%. "
                     f"Selling {qty:.3f} kWh at P2P market rate.",
                 ))
+                # Offline/cached fallback text is static ("80%"/"30%") — regenerate
+                # with this participant's ACTUAL thresholds so the log is honest.
+                # Live LLM prose never starts with "Cached fallback", so it passes
+                # through untouched.
+                if raw_rationale.startswith("Cached fallback"):
+                    rationale = (
+                        f"Cached fallback: battery SOC above sell threshold "
+                        f"({sell_threshold_pct:.0f}%). "
+                        f"Reserve floor ({reserve_pct:.0f}%) is satisfied. "
+                        f"Selling {qty} kWh surplus at P2P market rate."
+                    )
+                else:
+                    rationale = raw_rationale
 
             # ── Tier 4: Idle ───────────────────────────────────────────────────
             else:

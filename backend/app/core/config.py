@@ -42,13 +42,17 @@ FEEDER_CAP = float(_get("GRIDMESH_FEEDER_CAP", "8.0"))         # R-05: kWh aggre
 COLLUSION_PRICE_FLOOR = float(_get("GRIDMESH_COLLUSION_PRICE", "0.28"))  # R-04: price signal
 COLLUSION_QTY_FLOOR   = float(_get("GRIDMESH_COLLUSION_QTY",   "3.0"))   # R-04: qty signal
 
-# Battery capacities in kWh — derived from max(battery_kwh) per participant
-# in OPSD slice 2016-06-10. Update via env GRIDMESH_BAT_<PARTICIPANT>=N if slice changes.
+# Battery capacities in kWh — nameplate caps, single source of truth for the
+# live graph. MUST match the third tuple element of PARTICIPANTS in
+# data/build_slice.py (the values that generated data/household_15min.csv).
+# Do NOT derive from max(battery_kwh): pure consumers (household, ev_station)
+# start at 50% and only discharge, so observed max is cap/2, not cap.
+# Update via env GRIDMESH_BAT_<PARTICIPANT>=N if slice changes.
 BATTERY_CAPACITIES: dict[str, float] = {
     "solar_home":   float(_get("GRIDMESH_BAT_SOLAR_HOME",   "8.0")),
-    "household":    float(_get("GRIDMESH_BAT_HOUSEHOLD",     "2.0")),
+    "household":    float(_get("GRIDMESH_BAT_HOUSEHOLD",     "4.0")),
     "commercial":   float(_get("GRIDMESH_BAT_COMMERCIAL",   "14.0")),
-    "ev_station":   float(_get("GRIDMESH_BAT_EV_STATION",   "15.0")),
+    "ev_station":   float(_get("GRIDMESH_BAT_EV_STATION",   "30.0")),
     "battery_site": float(_get("GRIDMESH_BAT_BATTERY_SITE", "10.0")),
 }
 

@@ -7,7 +7,9 @@ LOOP-002: replaces the one-line string stub with two concrete dispatch modes:
       Charge rate capped at C/2 (capacity/2 kW) per participant.
 
   peak_shaving       — Evening stress (load > STRESS_THRESHOLD_KW):
-      Step A: discharge highest-SOC batteries first, down to RESERVE_FLOOR_PCT.
+      Step A: discharge highest-SOC batteries first, down to each
+          participant's own parsed reserve_pct (from preferences via
+          prosumer.parse_reserve_or_none), falling back to RESERVE_FLOOR_PCT.
       Step B: throttle ev_station to EV_THROTTLE_FACTOR of normal load.
 
   idle               — Net surplus < SURPLUS_MIN_KW and not stressed → do nothing.
@@ -105,7 +107,28 @@ def _surplus_absorption(rows: list[dict], cap_map: dict[str, float], tick: int) 
     )
 
 
-def _peak_shaving(rows: list[dict], cap_map: dict[str, float], tick: int) -> DispatchResult:
+def _reserve_floor_pct(pid: str, preferences: dict[str, str] | None) -> float:
+    """Per-participant discharge floor: parsed reserve or global default.
+
+    Reuses prosumer.parse_reserve_or_none (no duplicated regex) so
+    e.g. battery_site's "Keep 40% reserve" is honoured instead of the
+    global 20% floor. Returns RESERVE_FLOOR_PCT when no explicit reserve.
+    """
+    if preferences:
+        from app.agents.prosumer import parse_reserve_or_none
+
+        v = parse_reserve_or_none(preferences.get(pid, ""))
+        if v is not None:
+            return v
+    return RESERVE_FLOOR_PCT
+
+
+def _peak_shaving(
+    rows: list[dict],
+    cap_map: dict[str, float],
+    tick: int,
+    preferences: dict[str, str] | None = None,
+) -> DispatchResult:
     """Discharge highest-SOC batteries then throttle EV to cover evening demand deficit."""
     deficit_kw = sum(float(r["load_kw"]) - float(r["gen_kw"]) for r in rows)
     commands: list[DispatchCommand] = []
@@ -128,7 +151,8 @@ def _peak_shaving(rows: list[dict], cap_map: dict[str, float], tick: int) -> Dis
         bat_kwh = float(r.get("battery_kwh", 0.0))
         cap = cap_map.get(pid, 10.0)
         soc_pct = bat_kwh / cap * 100
-        floor_kwh = round(cap * RESERVE_FLOOR_PCT / 100, 3)
+        floor_pct = _reserve_floor_pct(pid, preferences)
+        floor_kwh = round(cap * floor_pct / 100, 3)
         available_kwh = round(max(0.0, bat_kwh - floor_kwh), 3)
         if available_kwh < 0.005:
             continue
@@ -149,7 +173,7 @@ def _peak_shaving(rows: list[dict], cap_map: dict[str, float], tick: int) -> Dis
                 rationale=(
                     f"Peak shaving: discharging {qty:.3f} kWh from {pid} into feeder. "
                     f"SOC {soc_pct:.0f}% -> {post_soc_pct:.1f}% "
-                    f"(reserve floor {RESERVE_FLOOR_PCT:.0f}%, "
+                    f"(reserve floor {floor_pct:.0f}%, "
                     f"available {available_kwh:.3f} kWh)."
                 ),
             )
@@ -209,9 +233,10 @@ class OptimizationAgent(BaseAgent):
         tick = state.get("tick", 0)
         stressed: bool = state.get("stressed", False)
         cap_map: dict[str, float] = state.get("capacity_map", config.BATTERY_CAPACITIES)
+        preferences: dict[str, str] = state.get("preferences", config.DEFAULT_PREFERENCES)
 
         if stressed:
-            result = _peak_shaving(rows, cap_map, tick)
+            result = _peak_shaving(rows, cap_map, tick, preferences)
         else:
             net_kw = sum(float(r["gen_kw"]) - float(r["load_kw"]) for r in rows)
             if net_kw >= SURPLUS_MIN_KW:

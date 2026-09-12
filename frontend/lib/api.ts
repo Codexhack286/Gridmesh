@@ -4,3 +4,22 @@ export async function postTick() {
   const r = await fetch(`${API_BASE}/tick`, { method: "POST" });
   return r.json();
 }
+
+export async function getReports() {
+  const r = await fetch(`${API_BASE}/api/reports`);
+  return r.json();
+}
+
+export async function getBlockchainStatus() {
+  const r = await fetch(`${API_BASE}/api/blockchain/status`);
+  return r.json();
+}
+
+export async function postRogueBid(kind: string, tick = 9999) {
+  const r = await fetch(`${API_BASE}/api/scenario/rogue_bid`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind, tick }),
+  });
+  return r.json();
+}

@@ -27,14 +27,24 @@ def load_default() -> pd.DataFrame:
 
 
 def capacity_map(df: pd.DataFrame | None = None) -> dict[str, float]:
-    """Return {participant_id: max_battery_kwh} from df or the default loaded slice.
+    """Return {participant_id: battery capacity kWh}.
 
-    Used by ProsumerAgent to compute battery SOC % per tick without re-reading the file.
+    Single source of truth is config.BATTERY_CAPACITIES (which must match
+    data/build_slice.py PARTICIPANTS). Observed max(battery_kwh) is NOT the
+    capacity: pure consumers start at 50% and only discharge, so their
+    observed max is cap/2. Use config values for known participants and
+    observed max only for unknown pids (e.g. sample_opsd.csv).
+
     Falls back to config.BATTERY_CAPACITIES if battery_kwh column is absent.
     """
     src = df if df is not None else load_default()
     if "battery_kwh" not in src.columns:
         from app.core import config  # late import to avoid circular
-        return config.BATTERY_CAPACITIES
-    return src.groupby("participant_id")["battery_kwh"].max().to_dict()
+        return dict(config.BATTERY_CAPACITIES)
+    from app.core import config  # late import to avoid circular
+    observed = src.groupby("participant_id")["battery_kwh"].max().to_dict()
+    return {
+        pid: float(config.BATTERY_CAPACITIES.get(pid, mx))
+        for pid, mx in observed.items()
+    }
 
