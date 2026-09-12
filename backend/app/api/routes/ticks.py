@@ -46,7 +46,7 @@ def tick() -> dict:
     block = LEDGER.close_block(tick_n)
     decision_log = [
         {"agent": "forecasting", "tick": tick_n, "action": f"{len(state.get('forecasts', []))} forecasts",
-         "rationale": "Seasonal-naive replay forecast per participant."},
+         "rationale": state.get("forecast_rationale", "Seasonal-naive replay forecast per participant.")},
         {"agent": "grid_health", "tick": tick_n,
          "action": "stress" if state.get("stressed") else "normal",
          "rationale": state.get("stress", {}).get("rationale", "")},
