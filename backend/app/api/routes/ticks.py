@@ -29,11 +29,19 @@ def tick() -> dict:
          "action": "stress" if state.get("stressed") else "normal",
          "rationale": state.get("stress", {}).get("rationale", "")},
         {"agent": "optimization", "tick": tick_n,
-         "action": state.get("dispatch", {}).get("action", ""),
+         "action": (
+             f"{state.get('dispatch', {}).get('mode', 'idle')} "
+             f"abs={state.get('dispatch', {}).get('net_absorbed_kwh', 0):.2f}kWh "
+             f"dis={state.get('dispatch', {}).get('net_discharged_kwh', 0):.2f}kWh "
+             f"({len(state.get('dispatch', {}).get('commands', []))} cmds)"
+         ),
          "rationale": state.get("dispatch", {}).get("rationale", "")},
         *[
             {"agent": "prosumer", "tick": tick_n,
-             "action": f"{d['participant_id']}:{d['action']} {d['qty_kwh']} kWh",
+             "action": (
+                 f"{d['participant_id']}:{d['action']} {d['qty_kwh']} kWh "
+                 f"[bat:{d.get('battery_soc_pct', 0):.0f}% {d.get('battery_action', 'hold')}]"
+             ),
              "rationale": d.get("rationale", "")}
             for d in state.get("decisions", [])
         ],
@@ -45,7 +53,19 @@ def tick() -> dict:
         ],
         *[
             {"agent": "regulation", "tick": tick_n,
-             "action": f"trade#{a['trade_index']} {'PASS' if a['passed'] else 'FLAG:' + a['flag']}",
+             "action": (
+                 f"trade#{a['trade_index']} "
+                 + (
+                     f"PASS [{a.get('rule_id', 'llm')}]"
+                     if a["passed"]
+                     else (
+                         f"FLAG:{a['flag']} "
+                         f"[{a.get('rule_id', '?')}] "
+                         f"({a.get('severity', 'info')}) "
+                         f"-> {a.get('enforcement', 'none')}"
+                     )
+                 )
+             ),
              "rationale": a.get("rationale", "")}
             for a in state.get("audits", [])
         ],
@@ -55,8 +75,24 @@ def tick() -> dict:
         "forecasts": state.get("forecasts", []),
         "stress": state.get("stress", {}),
         "dispatch": state.get("dispatch", {}),
+        "dispatch_commands": state.get("dispatch", {}).get("commands", []),
+        "net_absorbed_kwh": state.get("dispatch", {}).get("net_absorbed_kwh", 0),
+        "net_discharged_kwh": state.get("dispatch", {}).get("net_discharged_kwh", 0),
+        "net_wasted_kwh": state.get("dispatch", {}).get("net_wasted_kwh", 0),
         "decisions": state.get("decisions", []),
+        "battery_states": [
+            {
+                "participant_id": d["participant_id"],
+                "battery_soc_pct": d.get("battery_soc_pct", 0),
+                "battery_action": d.get("battery_action", "hold"),
+                "preference_applied": d.get("preference_applied", ""),
+            }
+            for d in state.get("decisions", [])
+        ],
         "trades": stored,
         "audits": state.get("audits", []),
+        "violation_count": sum(
+            1 for a in state.get("audits", []) if not a.get("passed", True)
+        ),
         "decision_log": decision_log,
     }

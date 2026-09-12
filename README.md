@@ -2,7 +2,7 @@
 
 AI Agents for a Cleaner, Fairer, Smarter Energy Future.
 
-**Status:** Phase 1 (Foundation) ✅ complete — see [`STATUS.md`](STATUS.md).
+**Status:** Phase 2 (Agentic Core) ✅ complete — see [`STATUS.md`](STATUS.md).
 Open bugs/loopholes: [`docs/BUGLOG.md`](docs/BUGLOG.md).
 
 ## Quickstart (scaffold)

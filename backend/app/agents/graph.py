@@ -9,6 +9,10 @@ from app.agents.optimization import OptimizationAgent
 from app.agents.prosumer import ProsumerAgent
 from app.agents.regulation import RegulationAgent
 from app.agents.trading import TradingAgent
+from app.core import config
+
+# Cached capacity map built once on first tick call (lazy, avoids startup I/O).
+_CAPACITY_MAP: dict[str, float] | None = None
 
 PIPELINE = (
     ForecastingAgent(),
@@ -21,10 +25,22 @@ PIPELINE = (
 
 
 def run_tick(rows: list[dict], tick: int) -> dict[str, Any]:
-    state: dict[str, Any] = {"rows": rows, "tick": tick}
+    # Build the capacity map once per process; cache in module-level variable.
+    global _CAPACITY_MAP
+    if _CAPACITY_MAP is None:
+        from app.data.opsd_loader import capacity_map as _build_cap_map, load_default
+        _CAPACITY_MAP = _build_cap_map(load_default())
+
+    state: dict[str, Any] = {
+        "rows": rows,
+        "tick": tick,
+        "capacity_map": _CAPACITY_MAP,
+        "preferences": config.DEFAULT_PREFERENCES,
+    }
     for agent in PIPELINE:
         state.update(agent.run(state))
     return state
+
 
 
 def build_graph():

@@ -6,29 +6,6 @@
 
 ## Open
 
-### BUG-001 (open) — No compliance flag fires on organic data
-- *Found:* 2026-09-12, full-day run: 68 audits, 0 flags.
-- *Impact:* PRD success metric wants ≥1 flag demoed; Regulation Agent looks decorative.
-- *Plan:* Phase 2 — LLM fairness-dispute path (PRD 4.2.13) + demo "rogue bid" injector.
-  Do NOT lower `MAX_QTY_KWH` to fake it.
-
-### LOOP-001 (open) — Agents ignore `battery_kwh`
-- *Found:* 2026-09-12, code inspection.
-- *Impact:* "Keep 30% battery reserve" preferences (PRD 4.2.10) can't work; battery
-  column is simulated in data but never read by Prosumer/Optimization agents.
-- *Plan:* Phase 2 — thread battery state into `run_tick` state + prosumer constraints.
-
-### LOOP-002 (open) — Midday surplus is mostly wasted
-- *Found:* 2026-09-12, slice stats: 240 kWh PV vs 57 kWh load; trades capped at
-  buyer demand, excess has nowhere to go.
-- *Impact:* Weakens the optimization story; batteries should absorb it.
-- *Plan:* Phase 2 — Optimization dispatch charges storage/EV from surplus (needs LOOP-001).
-
-### LOOP-003 (open) — Ledger is in-memory only
-- *Found:* 2026-09-12, code inspection (`ledger/table.py`).
-- *Impact:* Trade history resets on restart; no audit durability for the demo.
-- *Plan:* SQLite persistence pre-Phase 4; hash-chain replaces it in Phase 4.
-
 ### LOOP-004 (open) — Silent LLM fallback
 - *Found:* 2026-09-12, code inspection (`llm/client.py`).
 - *Impact:* Missing/bad API keys degrade to cached responses with no warning;
@@ -42,6 +19,18 @@
 - *Plan:* Add a WS test; either use it in `useGridStream` or cut it before freeze.
 
 ## Fixed
+
+### LOOP-003 (fixed 2026-09-12) — Ledger is in-memory only
+- *Fix:* Implemented `SQLiteLedger` using stdlib `sqlite3` and swapped it in as the global `LEDGER`. Features WAL mode, persistent storage for trades/audits/violations, and a `GET /api/reports` endpoint computing cumulative metrics natively in SQL.
+
+### LOOP-002 (fixed 2026-09-12) — Midday surplus is mostly wasted
+- *Fix:* Optimization Agent rewritten to issue active dispatch commands. Implemented `surplus_absorption` mode (charges EV and batteries during midday peaks) and `peak_shaving` mode (throttles EV and discharges batteries when grid stress hits).
+
+### LOOP-001 (fixed 2026-09-12) — Agents ignore `battery_kwh`
+- *Fix:* Threaded `battery_kwh` into `TickData`, converting it to `battery_soc` based on agent capacities in `config.py`. Prosumer agent logic upgraded to strictly honour `reserve_floor` and `sell_threshold` natural-language preferences before trading.
+
+### BUG-001 (fixed 2026-09-12) — No compliance flag fires on organic data
+- *Fix:* Built a 5-rule priority-ordered compliance engine in `RegulationAgent` (R-01 through R-05). Created `POST /api/scenario/rogue_bid` to inject illegal trades. Demonstrated automated enforcement (voiding vs alerting) and global `ViolationLog`.
 
 ### RES-006 (fixed 2026-09-12) — OPSD raw columns are cumulative counters
 - *Found:* Day-profile inspection (flat 24/7 values).

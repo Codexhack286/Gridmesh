@@ -24,3 +24,17 @@ def load_default() -> pd.DataFrame:
     if FULL_PATH.exists():
         return load_sample(FULL_PATH)
     return load_sample(SAMPLE_PATH)
+
+
+def capacity_map(df: pd.DataFrame | None = None) -> dict[str, float]:
+    """Return {participant_id: max_battery_kwh} from df or the default loaded slice.
+
+    Used by ProsumerAgent to compute battery SOC % per tick without re-reading the file.
+    Falls back to config.BATTERY_CAPACITIES if battery_kwh column is absent.
+    """
+    src = df if df is not None else load_default()
+    if "battery_kwh" not in src.columns:
+        from app.core import config  # late import to avoid circular
+        return config.BATTERY_CAPACITIES
+    return src.groupby("participant_id")["battery_kwh"].max().to_dict()
+

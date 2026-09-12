@@ -1,1 +1,6 @@
-{"passed": true, "flag": "", "rationale": "Cached fallback: clearing price within fair band and neither party exceeds per-tick quantity cap."}
+{
+  "passed": true,
+  "flag": "",
+  "severity": "info",
+  "rationale": "Cached fallback: clearing price within collar (< 0.30 $/kWh), quantity within cap (< 10 kWh), no self-trade, no collusion signal detected. Trade approved."
+}

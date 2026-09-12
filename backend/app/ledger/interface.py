@@ -12,3 +12,7 @@ class TradeLedger(ABC):
     @abstractmethod
     def list(self) -> list[dict]:
         """Return all stored trades in order."""
+
+    @abstractmethod
+    def stats(self) -> dict:
+        """Return cumulative aggregate stats: total_kwh, total_trades, total_value."""

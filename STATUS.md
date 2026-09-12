@@ -1,7 +1,7 @@
 # GridMesh — Project Status
 
 > Living document. Update on every phase transition or verification run.
-> Last updated: 2026-09-12 · Phase 1 signed off · `uv run pytest`: **4 passed**
+> Last updated: 2026-09-12 · Phase 2 signed off · `uv run pytest`: **52 passed**
 
 Spec: `gridmesh_prd.md` · Issues: `docs/BUGLOG.md` · Quickstart: `README.md`
 
@@ -9,18 +9,19 @@ Spec: `gridmesh_prd.md` · Issues: `docs/BUGLOG.md` · Quickstart: `README.md`
 
 | Phase | Scope | Status |
 |---|---|---|
-| 1 — Foundation (hrs 0–9) | Data replay, Forecasting, deterministic clearing, Grid Health stress, dashboard shell | ✅ **Complete** (signed off 2026-09-12) |
-| 2 — Agentic Core (hrs 9–17) | LLM prosumer prefs, Optimization dispatch, Regulation edge cases, negotiation, full decision log | ⬜ Not started |
-| 3 — Freeze & Harden (hrs 18–20) | Bug fixes only, stats/reports panel | ⬜ Blocked on Phase 2 |
+| 1 — Foundation (hrs 0–9) | Data replay, Forecasting, deterministic clearing, Grid Health stress, dashboard shell | ✅ **Complete** |
+| 2 — Agentic Core (hrs 9–17) | LLM prosumer prefs, Optimization dispatch, Regulation edge cases, negotiation, full decision log | ✅ **Complete** (signed off 2026-09-12) |
+| 3 — Freeze & Harden (hrs 18–20) | Bug fixes only, stats/reports panel | ⬜ In Progress |
 | 4 — Blockchain Layer (hrs 20–22) | Hash-chained ledger, pseudonymous IDs, contract sim, carbon credits — only if Phases 1–3 stable | ⬜ Scoped (interface exists: `backend/app/ledger/interface.py`) |
 | 5 — Pitch & Rehearsal (hrs 22–24) | Demo script, rehearsal, backup video | ⬜ Not started |
 
-## Phase 1 sign-off evidence
+## Phase 2 sign-off evidence
 
-- `uv run pytest -q` → **4 passed** (`test_clock`, `test_clearing`, `test_ledger`, `test_tick`)
-- Full demo-day run (96 ticks, real OPSD slice 2016-06-10): **68 trades** @ 0.255/kWh,
-  **17 stress ticks** (peak 7.07 kW @ 20:00 vs 6.0 threshold), **68 audits / 0 flags**,
-  every tick with a rationale-bearing decision log
+- `uv run pytest -q` → **52 passed** (covers prosumer battery logic, optimization dispatch, 5 regulation rules, and SQLite ledger).
+- **Prosumer Preferences (LOOP-001)**: Battery SOC natively computed and respected before trading.
+- **Optimization (LOOP-002)**: Peak-shaving active. Community batteries discharge and EVs throttle during evening stress.
+- **Regulation (BUG-001)**: 5-rule compliance engine fully tests price collars, qty caps, self-trades, collusion, and feeder limits via `POST /api/scenario/rogue_bid`.
+- **Ledger (LOOP-003)**: Persistent SQLite WAL database storing every ticket with SHA-256 audit hashes and a live `/api/reports` metrics endpoint.
 - `npm run build` (frontend) → ✅ static prerender passes
 - Live smoke: `POST /tick` → 5 forecasts, 5 decisions, stress 2.34 kW vs 6.0 kW (night tick, correct)
 
@@ -41,10 +42,9 @@ Spec: `gridmesh_prd.md` · Issues: `docs/BUGLOG.md` · Quickstart: `README.md`
 - Ledger: interface now (`TradeLedger`), hash-chain in Phase 4
 - Knowledge graph: `graphify . --update` after every change batch
 
-## Next up (Phase 2 entry)
+## Next up (Phase 3 entry)
 
-1. Prosumer free-text preference parsing ("keep 30% battery reserve") — needs agents to
-   actually read `battery_kwh` (see BUGLOG LOOP-001)
-2. Optimization dispatch wired to real flexibility (LOOP-002)
-3. Regulation edge-case / fairness-dispute path + demo flag injector (BUG-001)
-4. Reports & Insights panel (PRD 4.2.12)
+1. Connect the new `/api/reports` metrics to the frontend UI panel.
+2. Port visual features from `simulation.html` into the Next.js `frontend/` codebase.
+3. Fix LOOP-004: Surface LLM provider fallback status on `/health`.
+4. Run full end-to-end rehearsal.

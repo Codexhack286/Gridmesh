@@ -7,5 +7,11 @@ router = APIRouter()
 
 
 @router.get("/trades")
-def trades() -> dict:
-    return {"trades": LEDGER.list()}
+def trades(limit: int = 100, offset: int = 0) -> dict:
+    all_trades = LEDGER.list()
+    return {
+        "trades": all_trades[offset : offset + limit],
+        "total": len(all_trades),
+        "limit": limit,
+        "offset": offset,
+    }

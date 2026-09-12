@@ -11,6 +11,9 @@ htmlcov/
 *.db
 # Regenerable OPSD source download (~60MB); the built slice IS committed
 data/.cache/
+*.csv
+!data/household_15min.csv
+household_data_15min_singleindex.csv
 node_modules/
 .next/
 frontend/out/
