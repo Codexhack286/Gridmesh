@@ -97,7 +97,7 @@ const LAYERS: LayerNode[] = [
     color: "#0891B2",
     summary: "Appends settled trades and compliance audit receipts into an immutable cryptographic hash chain.",
     technicalSpecs: [
-      "Hash pointer linkage: Block_Hash = SHA256(Index + Prev_Hash + Timestamp + Payload)",
+      "Hash pointer linkage: Block_Hash = SHA256(prev_hash + serialized_trades + serialized_audits + str(tick))",
       "Stores trade volumes, clearing prices, participant IDs, and audit flags in SQLite",
       "Tamper detection engine: Any direct DB manipulation breaks cryptographic linkage"
     ],

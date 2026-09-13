@@ -79,10 +79,27 @@ Automated sub-5ms policy enforcement engine auditing every trade against statuto
 * **Rule R-05 (Distribution Transformer Limit):** Halts transactions that would physically push aggregate transformer loading beyond 8.0 kW.
 
 ### 6. Verifiable SHA-256 Merkle Blockchain Ledger
-* Every settled trade and regulatory compliance receipt is appended to an immutable SQLite-backed cryptographic hash chain.
-* Block hash pointer:
-  $$\text{Block\_Hash} = \text{SHA256}(\text{Index} + \text{Prev\_Hash} + \text{Timestamp} + \text{Payload})$$
-* **Live Tamper Verification:** Interactive verification engine recalculates the entire Merkle chain from Block #0 to the tip. If any database field is tampered with, the exact compromised block is flagged in red with zero downtime.
+Every settled trade and statutory compliance receipt is committed into an immutable, SQLite-backed cryptographic hash chain, guaranteeing auditability, non-repudiation, and sub-millisecond query performance without gas fees or external network dependencies.
+
+* **Two-Tier Cryptographic Architecture:**
+  * **Tier 1 — Row-Level Audit Receipts:** For every transaction audit, the compliance engine computes a tamper-evident 16-character SHA-256 cryptographic receipt:
+    ```python
+    audit_hash = hashlib.sha256(
+        f"{tick}|{trade_index}|{flag}|{rationale}".encode()
+    ).hexdigest()[:16]
+    ```
+  * **Tier 2 — Tick-Level Merkle Hash-Chain:** At the end of each 15-minute operational interval, `close_block(tick)` queries all persisted trades and audit rows directly back from the database, applies deterministic canonical JSON serialization (alphabetically sorted keys, compact separators `","` and `":"`), and computes the cryptographic block hash:
+    ```python
+    block_hash = hashlib.sha256(
+        (prev_hash + serialized_trades + serialized_audits + str(tick)).encode()
+    ).hexdigest()
+    ```
+  * **Genesis Block Anchor:** For Block #0 (`tick = 0`), `prev_hash` is anchored to a 64-character zero string (`"0" * 64`). For any subsequent block $t$, `prev_hash` is strictly cryptographically linked to the `block_hash` of block $t-1$.
+
+* **Dual-Validation Chain Integrity Engine (`POST /api/blockchain/verify`):**
+  1. **Chain Continuity Check:** Traverses the entire chain to verify that block $t$'s `prev_hash` strictly equals block $t-1$'s `block_hash`.
+  2. **Row-Level Recomputation from Ground Truth:** Rather than trusting in-memory state, the verification engine queries raw records from the `trades` and `audits` tables, reconstructs the canonical JSON payloads, and re-computes each block hash from disk.
+  * **Zero-Trust Forensic Attribution:** If a malicious actor or corrupted process alters any historical field (e.g., trade quantity, clearing price, or audit clearance flag) directly in the SQLite database, the recomputed hash diverges from the stored block header, instantly flagging the exact compromised block in red (`status: "tampered"`) with zero downtime.
 
 ### 7. Interactive What-If Decision Sandbox
 * A dedicated evaluation sandbox enabling operators and evaluators to manually test agent decision-making under custom boundary conditions without altering the main 15-minute simulation clock or blockchain ledger.
@@ -103,47 +120,159 @@ Automated sub-5ms policy enforcement engine auditing every trade against statuto
 
 ## System Architecture
 
+GridMesh employs an 8-layer modular architecture structured according to the **IEEE 2030.7 Microgrid Standard**, separating physical data telemetry, predictive machine learning, multi-agent negotiation, statutory policy enforcement, cryptographic persistence, and operator interfaces.
+
+### 1. End-to-End Layered System Architecture
+
+```mermaid
+flowchart TD
+    subgraph L0 ["LAYER 0: Physical IoT & Edge Layer"]
+        METER["Smart Meters<br/><b>DLMS / COSEM</b> (IS 16444)"]
+        INVERT["Solar PV Inverters<br/><b>Modbus RTU / TCP</b> (SunSpec)"]
+        BMS["Battery BMS<br/><b>CAN bus / RS-485</b>"]
+        GATEWAY["Industrial IoT Edge Gateway<br/>(Raspberry Pi CM4 / ESP32-S3)<br/><i>Zero Manual Uploads</i>"]
+        
+        METER -->|"Bidirectional kWh Telemetry"| GATEWAY
+        INVERT -->|"Real-Time Generation & MPPT"| GATEWAY
+        BMS -->|"Battery SOC% & Thermal State"| GATEWAY
+    end
+
+    subgraph L1 ["LAYER 1: Ingestion & Feeder Adaptation"]
+        INGEST["Empirical Telemetry Ingestion<br/>14,400 OPSD Smart Meter Records (15-min)"]
+        CALIB["Indian Feeder Calibration Engine<br/>• GHI: 5.5–6.5 kWh/m²/day<br/>• IST Solar Peak: 11:30–13:30<br/>• Evening Cooling Surge: 18:00–22:00<br/>• CEA Baseline: 0.716 kg CO₂/kWh"]
+        
+        GATEWAY -->|"MQTT over TLS"| INGEST
+        INGEST --> CALIB
+    end
+
+    subgraph L2 ["LAYER 2: Quant ML Predictive Core"]
+        FEAT["Feature Engineering Pipeline<br/>• Autoregressive Lags (lag1_load, lag1_gen)<br/>• Cyclical sin/cos Time Embeddings<br/>• Temporal & Calendar Features"]
+        MODEL["Voting Ensemble Forecaster<br/>• Random Forest (100 trees, depth 12)<br/>• XGBoost (100 rounds, lr 0.08)<br/><b>Solar R² = 95.62% | Demand R² = 70.98%</b>"]
+        
+        CALIB --> FEAT
+        FEAT --> MODEL
+    end
+
+    subgraph L3 ["LAYER 3: Multi-Agent Intelligence Engine (LangGraph)"]
+        FA["Forecasting Agent<br/>Serves 15-min ahead net forecasts"]
+        GHA["Grid Health Agent<br/>Monitors 6.0 kW DT Feeder Safety Limit"]
+        OPT["Optimization Agent<br/>Schedules BESS Peak-Shaving Discharge"]
+        PA["5 Prosumer Trading Agents<br/>• Solar Home A (Prosumer)<br/>• Residential Cluster B (Consumer)<br/>• Commercial Solar C (Exporter)<br/>• EV Fleet Hub D (Flexible Load)<br/>• Community BESS E (Buffer)"]
+        
+        MODEL --> FA
+        FA --> GHA
+        GHA -->|"Transformer Stress Flag"| OPT
+        OPT -->|"BESS Discharge Override"| PA
+        FA -->|"Forecast Net Deficit/Surplus"| PA
+    end
+
+    subgraph L4 ["LAYER 4: Continuous Double Auction (CDA)"]
+        BOOK["Orderbook Aggregation<br/>Descending Bids vs. Ascending Asks"]
+        CLEAR["Pareto Midpoint Clearing Engine<br/>P_clear = (P_bid + P_ask) / 2<br/><b>₹6.20/kWh Avg (vs. DISCOM ₹7.80/kWh)</b>"]
+        
+        PA -->|"Submit Bids & Asks"| BOOK
+        BOOK --> CLEAR
+    end
+
+    subgraph L5 ["LAYER 5: CERC Regulatory Compliance Shield"]
+        RULES["Statutory Policy Verification Engine (Sub-5ms)<br/>• R-01: Price Collar Ceiling (max ₹9.00/kWh)<br/>• R-02: Volume Quota Cap (max 10.0 kWh)<br/>• R-03: Self-Trade Guard (Wash Trading)<br/>• R-04: Anti-Collusion Floor (min ₹4.00/kWh)<br/>• R-05: Transformer Saturation Limit (8.0 kW)"]
+        AUDIT["Row-Level Tamper-Evident Receipts<br/>audit_hash = SHA256(tick|trade_idx|flag|rationale)[:16]"]
+        
+        CLEAR -->|"Proposed Trades"| RULES
+        RULES -->|"Audit Validation"| AUDIT
+    end
+
+    subgraph L6 ["LAYER 6: Verifiable Settlement Ledger"]
+        CANON["Deterministic Canonical JSON Serialization<br/>(sorted keys, compact separators)"]
+        CHAIN["SQLite SHA-256 Merkle Hash-Chain<br/>block_hash = SHA256(prev_hash + trades + audits + tick)<br/>• Genesis: prev_hash = 64 zeros<br/>• Dual-Validation Chain Integrity Engine"]
+        
+        AUDIT --> CANON
+        CANON --> CHAIN
+    end
+
+    subgraph L7L8 ["LAYERS 7 & 8: Presentation & Simulation"]
+        UI["Next.js 16 Operator Dashboard (Layer 8)<br/>• Live SVG Synoptic Diagram & Current Flows<br/>• Continuous Orderbook Depth & Ticker<br/>• Interactive Chain Explorer & Tamper UI"]
+        SANDBOX["What-If Decision Sandbox (Layer 7)<br/>• Stateless Parameter Injection (POST /api/simulate/decision)<br/>• 5 Presets & Live Dynamic Sliders<br/>• Zero Ledger / Blockchain Mutation"]
+        
+        CHAIN -->|"WebSocket Telemetry Stream"| UI
+        CHAIN -.->|"Stateless Baseline Context"| SANDBOX
+    end
 ```
-[ PHYSICAL / EDGE LAYER ]
-  Smart Meters (DLMS/COSEM) • Solar Inverters (Modbus RTU) • Battery BMS (CAN/RS485)
-                                    │ (Encrypted MQTT / gRPC)
-                                    ▼
-[ LAYER 1: Empirical Ingestion & Telemetry ]
-  14,400 OPSD Smart Meter Records • Indian GHI & IST Calibrated • 96 Ticks/Day
-                                    │
-                                    ▼
-[ LAYER 2: Quant ML Forecaster ]
-  Voting Ensemble: Random Forest + XGBoost • Cyclical sin/cos Embeddings • Lags
-  Solar R² = 95.62% • Demand R² = 70.98%
-                                    │
-                                    ▼
-[ LAYER 3: Multi-Agent Intelligence Layer ]
-  Forecasting Agent ──► Grid Health Agent (<6.0 kW DT limit)
-                                │
-                                ▼
-                       Optimization Agent (BESS Peak Shaving)
-                                │
-                                ▼
-                       Prosumer Agents (×5 Personas: Buy/Sell/Store)
-                                    │
-                                    ▼
-[ LAYER 4: Continuous Double Auction ]
-  Bid Queue vs. Ask Queue ──► Midpoint Clearing (₹6.20/kWh vs. DISCOM ₹7.80/kWh)
-                                    │
-                                    ▼
-[ LAYER 5: Compliance & Regulatory Shield ]
-  Sub-5ms Audit of CERC Rules: R-01 (Price), R-02 (Volume), R-03 (Wash), R-04 (Floor), R-05 (DT)
-                                    │
-                                    ▼
-[ LAYER 6: Verifiable Settlement Ledger ]
-  Immutable SHA-256 Merkle Chain • Cryptographic Receipts • SQLite Storage
-                                    │
-       ┌────────────────────────────┴────────────────────────────┐
-       ▼                                                         ▼
-[ LAYER 7: What-If Sandbox ]                            [ LAYER 8: Operator Console ]
-  Stateless Parameter Injection & Evaluation              Next.js 16 Executive Light-Mode Dashboard
-  Sliders • 5 Presets • Live Decision Tree                Synoptic Diagram • Orderbook • Blockchain Audit
+
+---
+
+### 2. 15-Minute Operational Dispatch State Machine
+
+The following flowchart details the sequential execution pipeline invoked at every 15-minute dispatch interval ($t \rightarrow t+1$):
+
+```mermaid
+flowchart TD
+    START(["POST /tick (Sim Clock Trigger)"]) --> T1["1. Ingest 15-Min Telemetry<br/><i>Read empirical generation, load & battery SOC</i>"]
+    T1 --> T2["2. Quant ML Forecaster (RF + XGBoost)<br/><i>Predict load & solar 15m ahead (R² 95.6% / 71.0%)</i>"]
+    T2 --> T3["3. Grid Health Monitor<br/><i>Calculate aggregate feeder load vs. 6.0 kW DT limit</i>"]
+    T3 --> DECIS1{"Feeder Draw > 6.0 kW?"}
+    
+    DECIS1 -- Yes --> T4A["4a. BESS Peak Shaving Override<br/><i>Optimization Agent orders BESS battery discharge</i>"]
+    DECIS1 -- No --> T4B["4b. Normal Feeder State<br/><i>No emergency peak-shaving required</i>"]
+    
+    T4A --> T5["5. Prosumer Order Formulation<br/><i>5 agents formulate bids & asks based on SOC & tariff</i>"]
+    T4B --> T5
+    
+    T5 --> T6["6. Continuous Double Auction (CDA)<br/><i>Sort buy queue (descending) & sell queue (ascending)<br/>Clear at Pareto midpoint: P_clear = (P_bid + P_ask) / 2</i>"]
+    
+    T6 --> T7["7. CERC Regulatory Shield Audit<br/><i>Audit trades against Rules R-01 to R-05 in <5ms</i>"]
+    T7 --> DECIS2{"Statutory Violation?"}
+    
+    DECIS2 -- Yes --> T8A["8a. Void Trade & Log Violation<br/><i>Record flag & reason, compute audit_hash receipt</i>"]
+    DECIS2 -- No --> T8B["8b. Approve Trade for Settlement<br/><i>Generate compliance receipt with audit_hash</i>"]
+    
+    T8A --> T9["9. SQLite Block Minting (close_block)<br/><i>Serialize trades & audits canonically (sorted JSON)<br/>block_hash = SHA256(prev_hash + trades + audits + tick)</i>"]
+    T8B --> T9
+    
+    T9 --> T10["10. Real-Time Broadcast<br/><i>Stream new state over WebSocket to Next.js Console</i>"]
+    T10 --> END(["Tick Finalized (Wait for next 15-min interval)"])
 ```
+
+---
+
+### 3. Dual Execution Modes: Autonomous Engine vs. What-If Sandbox
+
+```mermaid
+flowchart LR
+    subgraph M1 ["MODE 1: Autonomous Telemetry Pipeline"]
+        direction TB
+        CLK["15-Min Sim Clock<br/>(96 Ticks/Day)"] --> TEL["Live IoT Telemetry /<br/>OPSD Stream"]
+        TEL --> AG["Multi-Agent Decision<br/>Pipeline (LangGraph)"]
+        AG --> AUCT["Continuous Double Auction<br/>Midpoint Clearing"]
+        AUCT --> POL["CERC Regulatory Shield<br/>(Rules R-01 to R-05)"]
+        POL --> LEDGER[("Persistent SQLite Blockchain<br/>Immutable Merkle Chain")]
+        LEDGER --> DASH["Next.js Operator Dashboard<br/>(Real-Time WebSockets)"]
+    end
+
+    subgraph M2 ["MODE 2: Interactive What-If Sandbox"]
+        direction TB
+        SLIDERS["Interactive Sliders & 5 Presets<br/>(Solar, Load, SOC%, Tariff)"] --> API["POST /api/simulate/decision<br/>(Stateless Sandbox Endpoint)"]
+        API --> SIM_AG["Isolated Agent Evaluator<br/>(Decision Tree & SOC Logic)"]
+        SIM_AG --> SIM_RES["Decision JSON Response<br/>(Action, kWh, Price, Rationale, Rules)"]
+        SIM_RES --> SB_UI["What-If Sandbox UI Panel<br/>(Instant visual feedback, 0 side-effects)"]
+    end
+```
+
+---
+
+### 4. Architectural Layers Specification Matrix
+
+| Layer # | Layer Name | Core Technologies & Protocols | Input Signals | Primary Outputs & Artifacts | Target SLA |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Layer 0** | **Physical IoT Edge** | DLMS/COSEM (IS 16444), Modbus RTU, CAN bus, Raspberry Pi CM4 / ESP32-S3 | Bidirectional smart meters, solar MPPT, battery BMS | Normalized JSON telemetry payloads over MQTT/TLS | Sub-1s edge polling |
+| **Layer 1** | **Ingestion & Calibration** | Python 3.14, OPSD Dataset, CEA Baseline Database v19 | 14,400 empirical 15-minute observations, Indian GHI data | Calibrated diurnal profile (IST 11:30–13:30 solar peak, 18:00–22:00 cooling surge) | <10ms interval ingestion |
+| **Layer 2** | **Quant ML Forecaster** | scikit-learn (`VotingRegressor`), XGBoost, NumPy | Autoregressive lags (`lag1_load`, `lag1_gen`), cyclical sin/cos embeddings | 15-min ahead load & solar predictions ($R^2 = 95.62\%$ solar, $70.98\%$ demand) | <50ms inference |
+| **Layer 3** | **Multi-Agent Intelligence** | LangGraph, Python Multi-Agent Coordinator | Predicted loads, battery SOC %, 6.0 kW feeder safety limit | Optimized BESS dispatch overrides & 5 prosumer bid/ask order intents | <150ms agent consensus |
+| **Layer 4** | **Double Auction Clearing** | Continuous Double Auction (CDA), Pareto Midpoint Pricing | Aggregated bid queue (buyers) and ask queue (sellers) | Matched trades at $P_{\text{clear}} = \frac{P_{\text{bid}} + P_{\text{ask}}}{2}$ (avg ₹6.20/kWh) | <10ms queue matching |
+| **Layer 5** | **Regulatory Compliance Shield** | CERC/SERC Open Access Policy Engine | Proposed trade candidates & aggregate transformer load | Pass/Fail audit records, voided rogue orders, row-level `audit_hash` | <5ms statutory audit |
+| **Layer 6** | **Verifiable Settlement Ledger** | SQLite in WAL Mode, SHA-256 Merkle Hash-Chain | Canonical JSON trades, compliance receipts, preceding `prev_hash` | Immutable block headers in `blocks` table, tamper verification engine | <20ms block minting |
+| **Layer 7** | **What-If Decision Sandbox** | FastAPI Stateless Endpoint (`POST /api/simulate/decision`) | Operator custom slider values (Solar, Load, SOC%, Tariff) or 5 quick presets | Dynamic action badges, natural language rationale, order emission (zero ledger mutation) | <50ms evaluation |
+| **Layer 8** | **Executive Operator Console** | Next.js 16 (Turbopack), React 19, SVG Synoptic Topology, CSS Tokens | Real-time WebSocket feed (`/ws`), REST API endpoints | Live microgrid visualizer, orderbook depth, blockchain explorer, tamper detection UI | <100ms render cycle |
 
 ---
 
